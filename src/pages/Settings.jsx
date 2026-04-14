@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import {
-  User,
-  Building2,
-  Shield,
-  Trash2,
-  AlertTriangle,
-  X,
-  Database,
-  Clock,
-  FileText,
-} from 'lucide-react';
+  PersonIcon,
+  GridIcon,
+  LockClosedIcon,
+  TrashIcon,
+  ExclamationTriangleIcon,
+  Cross2Icon,
+  StackIcon,
+  ClockIcon,
+  FileTextIcon,
+} from '@radix-ui/react-icons';
 import AppLayout from '../components/AppLayout';
 import { useAuth } from '../contexts/AuthContext';
 import { getUserDisplayName } from '../utils/authUserDisplay';
@@ -27,12 +27,12 @@ function ConfirmDialog({ title, message, confirmLabel, confirmClass, onConfirm, 
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 bg-red-50 border border-red-100 rounded-lg flex items-center justify-center">
-              <AlertTriangle size={14} className="text-red-500" />
+              <ExclamationTriangleIcon width={14} height={14} className="text-red-500" />
             </div>
             <h2 className="text-slate-900 font-semibold text-base">{title}</h2>
           </div>
           <button onClick={onCancel} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
-            <X size={16} />
+            <Cross2Icon width={16} height={16} />
           </button>
         </div>
         <div className="px-6 py-5">
@@ -74,7 +74,7 @@ function Section({ title, icon: Icon, description, children }) {
     <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
       <div className="px-5 py-4 border-b border-slate-100">
         <div className="flex items-center gap-2.5">
-          <Icon size={16} className="text-slate-500" />
+          <Icon width={16} height={16} className="text-slate-500" />
           <div>
             <h3 className="text-slate-800 font-semibold text-sm">{title}</h3>
             {description && <p className="text-slate-400 text-xs mt-0.5">{description}</p>}
@@ -118,7 +118,7 @@ export default function Settings() {
       <div className="max-w-2xl mx-auto space-y-5">
 
         {/* Workspace */}
-        <Section title="Workspace" icon={Building2}>
+        <Section title="Workspace" icon={GridIcon}>
           <InfoField label="Name" value={mockWorkspace.name} />
           <InfoField label="Plan" value={mockWorkspace.plan} />
           <InfoField label="Documents" value={docs.length} />
@@ -131,30 +131,30 @@ export default function Settings() {
         </Section>
 
         {/* Account */}
-        <Section title="Account" icon={User}>
+        <Section title="Account" icon={PersonIcon}>
           <InfoField label="Name" value={getUserDisplayName(user) || '—'} />
           <InfoField label="Email" value={user?.email || ''} />
           <InfoField label="Role" value={user?.role ?? 'Member'} />
         </Section>
 
         {/* Data retention */}
-        <Section title="Data & Retention" icon={Shield}>
+        <Section title="Data & Retention" icon={LockClosedIcon}>
           <div className="space-y-3.5">
             <div className="flex items-start gap-2.5">
-              <Clock size={15} className="text-slate-400 flex-shrink-0 mt-0.5" />
+              <ClockIcon width={15} height={15} className="text-slate-400 flex-shrink-0 mt-0.5" />
               <p className="text-slate-500 text-sm leading-relaxed">
                 Documents are retained for <strong className="text-slate-700">{mockWorkspace.retentionDays} days</strong>.
                 Scheduled purge: <strong className="text-slate-700">{retentionDate}</strong>.
               </p>
             </div>
             <div className="flex items-start gap-2.5">
-              <Database size={15} className="text-slate-400 flex-shrink-0 mt-0.5" />
+              <StackIcon width={15} height={15} className="text-slate-400 flex-shrink-0 mt-0.5" />
               <p className="text-slate-500 text-sm leading-relaxed">
                 Files are encrypted at rest (AES-256) and in transit (TLS 1.3). Documents are <strong className="text-slate-700">never used to train AI models</strong>.
               </p>
             </div>
             <div className="flex items-start gap-2.5">
-              <FileText size={15} className="text-slate-400 flex-shrink-0 mt-0.5" />
+              <FileTextIcon width={15} height={15} className="text-slate-400 flex-shrink-0 mt-0.5" />
               <p className="text-slate-500 text-sm leading-relaxed">
                 All document access and analysis runs are logged for 90 days and exportable on request.
               </p>
@@ -165,7 +165,7 @@ export default function Settings() {
         {/* Danger zone */}
         <div className="bg-white border border-red-200 rounded-2xl overflow-hidden">
           <div className="flex items-center gap-2.5 px-5 py-4 border-b border-red-100 bg-red-50/50">
-            <AlertTriangle size={16} className="text-red-500" />
+            <ExclamationTriangleIcon width={16} height={16} className="text-red-500" />
             <h3 className="text-red-800 font-semibold text-sm">Danger Zone</h3>
           </div>
           <div className="px-5 py-5 space-y-4">
@@ -181,7 +181,7 @@ export default function Settings() {
                 disabled={docs.length === 0}
                 className="flex items-center gap-1.5 border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium px-3.5 py-2 rounded-xl transition-colors flex-shrink-0"
               >
-                <Trash2 size={14} />
+                <TrashIcon width={14} height={14} />
                 Clear
               </button>
             </div>
@@ -196,7 +196,7 @@ export default function Settings() {
                 onClick={() => setShowDeleteWorkspace(true)}
                 className="flex items-center gap-1.5 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-3.5 py-2 rounded-xl transition-colors flex-shrink-0"
               >
-                <Trash2 size={14} />
+                <TrashIcon width={14} height={14} />
                 Delete
               </button>
             </div>

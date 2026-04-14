@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import {
-  Zap,
-  BarChart3,
-  AlertTriangle,
-  CheckCircle,
-  X,
-  ExternalLink,
-  FileText,
-  AlertCircle,
-  Flag,
-  ClipboardList,
-  Download,
-} from 'lucide-react';
+  LightningBoltIcon,
+  BarChartIcon,
+  ExclamationTriangleIcon,
+  CheckCircledIcon,
+  Cross2Icon,
+  ExternalLinkIcon,
+  FileTextIcon,
+  InfoCircledIcon,
+  DrawingPinIcon,
+  ClipboardIcon,
+  DownloadIcon,
+} from '@radix-ui/react-icons';
 import AppLayout from '../components/AppLayout';
 import { useDocuments } from '../context/DocumentsContext';
 import { Link } from 'react-router-dom';
@@ -58,9 +58,9 @@ function RunResultBanner({ result, onDismiss }) {
       }`}
     >
       {ok ? (
-        <CheckCircle size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
+        <CheckCircledIcon width={16} height={16} className="text-green-500 flex-shrink-0 mt-0.5" />
       ) : (
-        <AlertTriangle size={16} className="text-red-500 flex-shrink-0 mt-0.5" />
+        <ExclamationTriangleIcon width={16} height={16} className="text-red-500 flex-shrink-0 mt-0.5" />
       )}
       <div className="flex-1 min-w-0">
         <p className={`text-sm font-semibold ${ok ? 'text-green-800' : 'text-red-800'}`}>
@@ -82,7 +82,7 @@ function RunResultBanner({ result, onDismiss }) {
         onClick={onDismiss}
         className="text-slate-400 hover:text-slate-600 flex-shrink-0"
       >
-        <X size={14} />
+        <Cross2Icon width={14} height={14} />
       </button>
     </div>
   );
@@ -271,7 +271,7 @@ export default function Analysis() {
 
         {newerPendingCount > 0 && (
           <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-            <AlertCircle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
+            <InfoCircledIcon width={16} height={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
             <p className="text-amber-900 text-sm flex-1">
               You have {newerPendingCount} newer analysis run
               {newerPendingCount !== 1 ? 's' : ''} awaiting administrator review. Published results below
@@ -283,13 +283,13 @@ export default function Analysis() {
         {/* ENV error banner */}
         {envError && (
           <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-            <AlertCircle size={16} className="text-red-500 flex-shrink-0 mt-0.5" />
+            <InfoCircledIcon width={16} height={16} className="text-red-500 flex-shrink-0 mt-0.5" />
             <p className="text-red-700 text-sm flex-1">{envError}</p>
             <button
               onClick={() => setEnvError('')}
               className="text-red-400 hover:text-red-600 flex-shrink-0"
             >
-              <X size={14} />
+              <Cross2Icon width={14} height={14} />
             </button>
           </div>
         )}
@@ -319,7 +319,7 @@ export default function Analysis() {
                 </>
               ) : (
                 <>
-                  <Zap size={16} />
+                  <LightningBoltIcon width={16} height={16} />
                   Run Analysis
                 </>
               )}
@@ -355,14 +355,14 @@ export default function Analysis() {
                 to="/documents"
                 className="text-blue-500 hover:text-blue-600 text-xs font-medium flex items-center gap-1"
               >
-                Manage <ExternalLink size={11} />
+                Manage <ExternalLinkIcon width={11} height={11} />
               </Link>
             </div>
 
             {docs.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
                 <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center mb-3">
-                  <BarChart3 size={18} className="text-slate-300" />
+                  <BarChartIcon width={18} height={18} className="text-slate-300" />
                 </div>
                 <p className="text-slate-500 text-sm font-medium mb-1">No documents uploaded</p>
                 <p className="text-slate-400 text-xs max-w-xs">
@@ -398,7 +398,7 @@ export default function Analysis() {
                           eligible ? 'bg-blue-500 border-blue-500' : 'border-slate-300'
                         }`}
                       >
-                        {eligible && <CheckCircle size={10} className="text-white" />}
+                        {eligible && <CheckCircledIcon width={10} height={10} className="text-white" />}
                       </div>
                       <span className="text-slate-700 text-sm flex-1 truncate">{doc.name}</span>
                       <span
@@ -429,7 +429,7 @@ export default function Analysis() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 py-4 border-b border-slate-100">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
-                  <FileText size={18} className="text-slate-600" />
+                  <FileTextIcon width={18} height={18} className="text-slate-600" />
                 </div>
                 <div>
                   <h3 className="text-slate-800 font-semibold text-sm">Formatted report (PDF)</h3>
@@ -450,7 +450,7 @@ export default function Analysis() {
                 }}
                 className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors flex-shrink-0"
               >
-                <Download size={16} />
+                <DownloadIcon width={16} height={16} />
                 Download PDF
               </button>
             </div>
@@ -463,7 +463,7 @@ export default function Analysis() {
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <div className="flex items-center gap-2">
-              <FileText size={15} className="text-slate-500" />
+              <FileTextIcon width={15} height={15} className="text-slate-500" />
               <h3 className="text-slate-800 font-semibold text-sm">Executive Summary</h3>
             </div>
             {displayAnalysis.executiveSummary.confidence > 0 && (
@@ -483,7 +483,7 @@ export default function Analysis() {
         {displayAnalysis.redFlags.length > 0 && (
           <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
             <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
-              <Flag size={15} className="text-red-500" />
+              <DrawingPinIcon width={15} height={15} className="text-red-500" />
               <h3 className="text-slate-800 font-semibold text-sm">
                 Red Flags{' '}
                 <span className="text-slate-400 font-normal text-xs">
@@ -525,7 +525,7 @@ export default function Analysis() {
         {displayAnalysis.missingData.length > 0 && (
           <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
             <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
-              <ClipboardList size={15} className="text-amber-500" />
+              <ClipboardIcon width={15} height={15} className="text-amber-500" />
               <h3 className="text-slate-800 font-semibold text-sm">
                 Missing Data{' '}
                 <span className="text-slate-400 font-normal text-xs">
@@ -541,7 +541,7 @@ export default function Analysis() {
                       item.checked ? 'bg-green-500 border-green-500' : 'border-slate-300'
                     }`}
                   >
-                    {item.checked && <CheckCircle size={10} className="text-white" />}
+                    {item.checked && <CheckCircledIcon width={10} height={10} className="text-white" />}
                   </div>
                   <span
                     className={`text-sm flex-1 ${

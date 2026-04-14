@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ShieldCheck, LogOut } from 'lucide-react';
+import { CheckCircledIcon, ExitIcon } from '@radix-ui/react-icons';
 import Sidebar, { MobileMenuButton } from './Sidebar';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -24,7 +24,7 @@ export default function AppLayout({ children, title, actions }) {
               <MobileMenuButton onClick={() => setMobileOpen(true)} />
               <div className="hidden sm:flex items-center gap-2 pr-3 border-r border-slate-200 flex-shrink-0">
                 <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                  <ShieldCheck size={16} className="text-white" />
+                  <CheckCircledIcon width={16} height={16} className="text-white" />
                 </div>
                 <span className="text-slate-900 font-semibold text-sm">DiligenceAI</span>
               </div>
@@ -41,7 +41,7 @@ export default function AppLayout({ children, title, actions }) {
                   onClick={handleSignOut}
                   className="inline-flex items-center gap-1.5 text-slate-600 hover:text-slate-900 text-sm font-medium px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors"
                 >
-                  <LogOut size={15} />
+                  <ExitIcon width={15} height={15} />
                   <span className="hidden sm:inline">Sign out</span>
                 </button>
               )}

@@ -1,4 +1,4 @@
-import { BarChart3 } from 'lucide-react';
+import { BarChartIcon } from '@radix-ui/react-icons';
 
 const ACCENT_COLORS = ['#3B82F6', '#8B5CF6', '#22C55E', '#F59E0B', '#EF4444'];
 
@@ -7,7 +7,7 @@ export default function ComparableCompanies({ comparables }) {
     return (
       <div className="flex flex-col items-center justify-center py-10 gap-3 text-center">
         <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
-          <BarChart3 size={18} className="text-slate-300" />
+          <BarChartIcon width={18} height={18} className="text-slate-300" />
         </div>
         <p className="text-slate-500 text-sm">Comparable company analysis will appear here once the n8n workflow outputs a <code className="mx-1 px-1.5 py-0.5 bg-slate-100 rounded text-slate-600 text-xs">market.comparables</code> array.</p>
       </div>

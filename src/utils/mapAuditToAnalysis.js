@@ -317,25 +317,312 @@ function extractAuditFromDeepStrings(root) {
   return null;
 }
 
-function normalizeKPIs(data) {
-  let raw = data.kpis ?? data.metrics ?? data.kpi_extraction ?? [];
-  if (!Array.isArray(raw)) {
-    if (raw && typeof raw === 'object') {
-      raw = Object.entries(raw).map(([metric, value]) => ({ metric, value: String(value) }));
+/** Objects n8n often nests the real payload under (first hit wins for reads). */
+function n8nSearchRoots(root) {
+  const out = [];
+  const seen = new Set();
+  function add(x) {
+    if (x == null || typeof x !== 'object' || Array.isArray(x)) return;
+    if (seen.has(x)) return;
+    seen.add(x);
+    out.push(x);
+  }
+  add(root);
+  if (root && typeof root === 'object' && !Array.isArray(root)) {
+    for (const k of [
+      'data',
+      'result',
+      'results',
+      'output',
+      'response',
+      'payload',
+      'body',
+      'analysis',
+      'report',
+      'json',
+      'item',
+      'record',
+    ]) {
+      add(root[k]);
+    }
+  }
+  return out;
+}
+
+function firstDefined(...vals) {
+  for (const v of vals) {
+    if (v !== undefined && v !== null) {
+      if (typeof v === 'string' && !v.trim()) continue;
+      return v;
+    }
+  }
+  return undefined;
+}
+
+function firstFiniteNumber(...vals) {
+  for (const v of vals) {
+    if (v === '' || v == null) continue;
+    const n = Number(v);
+    if (Number.isFinite(n)) return n;
+  }
+  return 0;
+}
+
+/** First non-empty array among candidates (or last array if all empty). */
+function firstNonEmptyArray(...candidates) {
+  let lastArr;
+  for (const c of candidates) {
+    if (!Array.isArray(c)) continue;
+    lastArr = c;
+    if (c.length > 0) return c;
+  }
+  return lastArr ?? [];
+}
+
+function pickAcross(roots, getter) {
+  for (const o of roots) {
+    const v = getter(o);
+    if (v === undefined || v === null) continue;
+    if (typeof v === 'string' && !v.trim()) continue;
+    if (Array.isArray(v) && v.length === 0) continue;
+    return v;
+  }
+  return undefined;
+}
+
+function normalizeKPIsFromRaw(raw) {
+  if (raw == null) return [];
+  let rows = raw;
+  if (!Array.isArray(rows)) {
+    if (rows && typeof rows === 'object') {
+      rows = Object.entries(rows).map(([metric, value]) => ({ metric, value: String(value) }));
     } else {
       return [];
     }
   }
-  return raw.map((k, i) => ({
+  return rows.map((k, i) => ({
     id: i,
-    metric: k.metric ?? k.name ?? k.label ?? `Metric ${i + 1}`,
-    value: k.value != null ? String(k.value) : '—',
+    metric: k.metric ?? k.name ?? k.label ?? k.key ?? k.title ?? `Metric ${i + 1}`,
+    value: k.value != null ? String(k.value) : k.val != null ? String(k.val) : '—',
     confidence: k.confidence ?? 'medium',
     confidenceScore: (() => {
       const s = Number(k.confidenceScore ?? k.confidence_score ?? k.score ?? 50);
       return s <= 10 ? s * 10 : s;
     })(),
   }));
+}
+
+function normalizeKPIs(roots) {
+  const raw = pickAcross(roots, (o) =>
+    firstDefined(
+      o.kpis,
+      o.metrics,
+      o.kpi_extraction,
+      o.kpiExtraction,
+      o.KPIs,
+      o.extracted_kpis,
+      o.extractedKpis,
+      o.kpi_list,
+      o.kpiList,
+      o.kpi_data,
+      o.kpiData,
+      o.kpi_rows,
+      o.kpiRows
+    )
+  );
+  return normalizeKPIsFromRaw(raw ?? []);
+}
+
+function normalizeComparableRow(row, index) {
+  if (row == null) return null;
+  if (typeof row === 'string') {
+    return { name: row, stage: '', metrics: {} };
+  }
+  if (typeof row !== 'object') return null;
+  const name =
+    row.name ??
+    row.company ??
+    row.companyName ??
+    row.title ??
+    row.label ??
+    `Company ${index + 1}`;
+  const stage = row.stage ?? row.round ?? row.funding ?? '';
+  let metrics = row.metrics;
+  if (!metrics || typeof metrics !== 'object' || Array.isArray(metrics)) {
+    const skip = new Set([
+      'name',
+      'company',
+      'companyName',
+      'title',
+      'label',
+      'stage',
+      'round',
+      'funding',
+      'metrics',
+      'id',
+    ]);
+    metrics = {};
+    for (const [k, v] of Object.entries(row)) {
+      if (skip.has(k)) continue;
+      if (v != null && typeof v !== 'object') metrics[k] = v;
+    }
+  }
+  return { name: String(name), stage: String(stage), metrics };
+}
+
+function normalizeComparablesList(raw) {
+  const arr = Array.isArray(raw) ? raw : [];
+  return arr.map((row, i) => normalizeComparableRow(row, i)).filter(Boolean);
+}
+
+function mergeConfidenceObjects(roots, auditScores) {
+  const merged = {};
+  const apply = (obj) => {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return;
+    for (const [k, v] of Object.entries(obj)) {
+      if (v == null || v === '') continue;
+      const n = Number(v);
+      if (!Number.isFinite(n)) continue;
+      merged[k] = n <= 10 ? n * 10 : n;
+    }
+  };
+  for (const o of roots) {
+    apply(o.confidence_scores);
+    apply(o.confidenceScores);
+    apply(o.agent_confidence);
+    apply(o.agentConfidence);
+    apply(o.confidence);
+  }
+  apply(auditScores);
+  return merged;
+}
+
+function buildMarketBlock(roots, score) {
+  const nested = pickAcross(roots, (o) => o.market) ?? {};
+  const nestedMap = typeof nested === 'object' && !Array.isArray(nested) ? nested : {};
+
+  const comparablesRaw = firstNonEmptyArray(
+    Array.isArray(nestedMap.comparables) ? nestedMap.comparables : [],
+    pickAcross(roots, (o) => o.comparables ?? o.comparable_companies ?? o.comparableCompanies ?? o.comps)
+  );
+
+  const bullets = firstNonEmptyArray(
+    Array.isArray(nestedMap.bullets) ? nestedMap.bullets : [],
+    pickAcross(roots, (o) => o.market_bullets ?? o.marketBullets ?? o.market_summary_bullets)
+  );
+
+  const tam = firstFiniteNumber(
+    nestedMap.tam,
+    pickAcross(roots, (o) => o.tam ?? o.TAM ?? o.market_tam ?? o.marketTam)
+  );
+  const sam = firstFiniteNumber(
+    nestedMap.sam,
+    pickAcross(roots, (o) => o.sam ?? o.SAM ?? o.market_sam ?? o.marketSam)
+  );
+  const som = firstFiniteNumber(
+    nestedMap.som,
+    pickAcross(roots, (o) => o.som ?? o.SOM ?? o.market_som ?? o.marketSom)
+  );
+
+  const conf = firstFiniteNumber(
+    nestedMap.confidence,
+    pickAcross(roots, (o) => o.market_confidence ?? o.marketConfidence),
+    score * 10
+  );
+
+  return {
+    bullets: Array.isArray(bullets) ? bullets : [],
+    confidence: conf,
+    comparables: normalizeComparablesList(comparablesRaw),
+    tam,
+    sam,
+    som,
+  };
+}
+
+function buildFinancialsBlock(roots) {
+  const nested = pickAcross(roots, (o) => o.financials) ?? {};
+  const fin = typeof nested === 'object' && !Array.isArray(nested) ? nested : {};
+
+  const arrHistory = firstNonEmptyArray(
+    Array.isArray(fin.arrHistory) ? fin.arrHistory : [],
+    Array.isArray(fin.arr_history) ? fin.arr_history : [],
+    pickAcross(roots, (o) => o.arrHistory ?? o.arr_history ?? o.revenue_history ?? o.ARR_history ?? o.arr_series)
+  );
+
+  const burnHistory = firstNonEmptyArray(
+    Array.isArray(fin.burnHistory) ? fin.burnHistory : [],
+    Array.isArray(fin.burn_history) ? fin.burn_history : [],
+    pickAcross(roots, (o) =>
+      o.burnHistory ?? o.burn_history ?? o.monthly_burn ?? o.monthlyBurnSeries ?? o.cash_burn_series
+    )
+  );
+
+  const runwayMonths = firstFiniteNumber(
+    fin.runwayMonths,
+    fin.runway_months,
+    pickAcross(roots, (o) => o.runwayMonths ?? o.runway_months ?? o.runway ?? o.months_runway)
+  );
+
+  const unitEconomics =
+    firstDefined(
+      fin.unitEconomics,
+      fin.unit_economics,
+      pickAcross(roots, (o) => o.unitEconomics ?? o.unit_economics ?? o.unit_economics_summary)
+    ) ?? null;
+
+  return {
+    arrHistory,
+    burnHistory,
+    runwayMonths,
+    unitEconomics,
+  };
+}
+
+function buildTractionTimeline(roots) {
+  return firstNonEmptyArray(
+    pickAcross(roots, (o) => o.tractionTimeline),
+    pickAcross(roots, (o) => o.traction_timeline ?? o.traction ?? o.monthly_traction ?? o.growth_timeline)
+  );
+}
+
+function buildCapTable(roots) {
+  return firstNonEmptyArray(
+    pickAcross(roots, (o) => o.capTable),
+    pickAcross(roots, (o) => o.cap_table ?? o.captable ?? o.cap_table_summary)
+  );
+}
+
+function buildTeam(roots) {
+  const t = pickAcross(roots, (o) => o.team) ?? {};
+  const teamObj = typeof t === 'object' && !Array.isArray(t) ? t : {};
+  const founders = firstNonEmptyArray(
+    Array.isArray(teamObj.founders) ? teamObj.founders : [],
+    pickAcross(roots, (o) => o.founders ?? o.team_founders)
+  );
+  const keyPersonRisk =
+    Boolean(teamObj.keyPersonRisk) ||
+    Boolean(teamObj.key_person_risk) ||
+    Boolean(pickAcross(roots, (o) => o.keyPersonRisk ?? o.key_person_risk));
+  return { founders, keyPersonRisk };
+}
+
+function mergeAuditFindings(data, roots) {
+  const fromAudit = Array.isArray(data.audit_findings) ? data.audit_findings : [];
+  if (fromAudit.length > 0) return fromAudit;
+  const rf = pickAcross(roots, (o) => o.red_flags ?? o.redFlags ?? o.audit_findings ?? o.auditFindings);
+  if (Array.isArray(rf) && rf.length > 0) return rf;
+  const cf = pickAcross(roots, (o) => o.contradictions_found ?? o.contradictionsFound);
+  return Array.isArray(cf) ? cf : [];
+}
+
+function mergeAdditionalFlags(data, roots) {
+  const fromAudit = Array.isArray(data.additional_flags) ? data.additional_flags : [];
+  if (fromAudit.length > 0) return fromAudit;
+  const af = pickAcross(roots, (o) => o.additional_flags ?? o.additionalFlags);
+  if (Array.isArray(af) && af.length > 0) return af;
+  const gaps = pickAcross(roots, (o) => o.missing_data ?? o.missingData ?? o.data_gaps ?? o.gaps);
+  return Array.isArray(gaps) ? gaps : [];
 }
 
 export function mapAuditToAnalysis(raw) {
@@ -390,6 +677,12 @@ export function mapAuditToAnalysis(raw) {
   }
 
   const score = data.overall_diligence_score;
+  const roots = n8nSearchRoots(normalized);
+  const findingsList = mergeAuditFindings(data, roots);
+  const flagsList = mergeAdditionalFlags(data, roots);
+  const marketBlock = buildMarketBlock(roots, score);
+  const financialsBlock = buildFinancialsBlock(roots);
+  const teamBlock = buildTeam(roots);
 
   return {
     executiveSummary: {
@@ -398,44 +691,50 @@ export function mapAuditToAnalysis(raw) {
       citations: [],
     },
 
-    kpis: normalizeKPIs(normalized),
+    kpis: normalizeKPIs(roots),
 
-    market: {
-      bullets: [],
-      confidence: score * 10,
-      comparables: Array.isArray(normalized?.market?.comparables)
-        ? normalized.market.comparables
-        : [],
-    },
+    market: marketBlock,
 
-    redFlags: data.audit_findings
-      .filter((f) => f != null && typeof f === 'object')
-      .map((finding, index) => ({
-        id: index,
-        severity: finding.severity ?? 'Medium',
-        title: finding.title ?? finding.name ?? `Finding ${index + 1}`,
-        description: finding.description ?? finding.details ?? '',
-        citation: '',
-        contradicts: null,
-      })),
+    financials: financialsBlock,
 
-    missingData: data.additional_flags.map((flag, index) => ({
+    team: teamBlock,
+
+    capTable: buildCapTable(roots),
+
+    tractionTimeline: buildTractionTimeline(roots),
+
+    redFlags: findingsList
+      .filter((f) => f != null && (typeof f === 'object' || typeof f === 'string'))
+      .map((finding, index) => {
+        if (typeof finding === 'string') {
+          return {
+            id: index,
+            severity: 'Medium',
+            title: finding,
+            description: '',
+            citation: '',
+            contradicts: null,
+          };
+        }
+        return {
+          id: index,
+          severity: finding.severity ?? 'Medium',
+          title: finding.title ?? finding.name ?? finding.issue ?? `Finding ${index + 1}`,
+          description: finding.description ?? finding.details ?? finding.detail ?? '',
+          citation: '',
+          contradicts: null,
+        };
+      }),
+
+    missingData: flagsList.map((flag, index) => ({
       id: index,
-      item: typeof flag === 'string' ? flag : (flag.label ?? flag.item ?? String(flag)),
-      priority: 'High',
+      item: typeof flag === 'string' ? flag : (flag.label ?? flag.item ?? flag.message ?? String(flag)),
+      priority: (flag && typeof flag === 'object' && flag.priority) || 'High',
       checked: false,
     })),
 
     recommendation: data.investment_recommendation ?? 'WATCH',
     diligenceScore: Number(data.overall_diligence_score ?? 5),
-    confidenceScores: (() => {
-      const cs = data.confidence_scores ?? {};
-      const normalized = {};
-      for (const [k, v] of Object.entries(cs)) {
-        const n = Number(v);
-        normalized[k] = n <= 10 ? n * 10 : n;
-      }
-      return normalized;
-    })(),
+    confidenceScores: mergeConfidenceObjects(roots, data.confidence_scores),
   };
 }

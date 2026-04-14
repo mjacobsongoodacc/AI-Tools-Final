@@ -1,47 +1,47 @@
 import { useState, useRef, useCallback } from 'react';
 import {
-  Upload,
-  FileText,
-  FileSpreadsheet,
-  Trash2,
-  CheckCircle,
-  AlertCircle,
-  Clock,
-  X,
-  FilePlus,
-  ChevronUp,
-  ChevronDown,
-  Loader2,
-} from 'lucide-react';
+  UploadIcon,
+  FileTextIcon,
+  TableIcon,
+  TrashIcon,
+  CheckCircledIcon,
+  InfoCircledIcon,
+  ClockIcon,
+  Cross2Icon,
+  FilePlusIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+  ReloadIcon,
+} from '@radix-ui/react-icons';
 import AppLayout from '../components/AppLayout';
 import { useDocuments } from '../context/DocumentsContext';
 
 const FILE_ICONS = {
-  PDF: FileText,
-  DOCX: FileText,
-  XLSX: FileSpreadsheet,
+  PDF: FileTextIcon,
+  DOCX: FileTextIcon,
+  XLSX: TableIcon,
 };
 
 const STATUS_CONFIG = {
   Ready: {
     label: 'Ready',
     className: 'bg-green-500/10 text-green-600 border border-green-500/20',
-    icon: CheckCircle,
+    icon: CheckCircledIcon,
   },
   Processing: {
     label: 'Processing',
     className: 'bg-amber-500/10 text-amber-600 border border-amber-500/20',
-    icon: Clock,
+    icon: ClockIcon,
   },
   Uploading: {
     label: 'Uploading…',
     className: 'bg-blue-500/10 text-blue-600 border border-blue-500/20',
-    icon: Loader2,
+    icon: ReloadIcon,
   },
   Error: {
     label: 'Error',
     className: 'bg-red-500/10 text-red-600 border border-red-500/20',
-    icon: AlertCircle,
+    icon: InfoCircledIcon,
   },
 };
 
@@ -53,10 +53,10 @@ function formatDate(iso) {
 
 function SortIcon({ column, sortBy, sortDir }) {
   if (sortBy !== column)
-    return <ChevronUp size={13} className="text-slate-300 opacity-0 group-hover:opacity-100" />;
+    return <ChevronUpIcon width={13} height={13} className="text-slate-300 opacity-0 group-hover:opacity-100" />;
   return sortDir === 'asc'
-    ? <ChevronUp size={13} className="text-blue-500" />
-    : <ChevronDown size={13} className="text-blue-500" />;
+    ? <ChevronUpIcon width={13} height={13} className="text-blue-500" />
+    : <ChevronDownIcon width={13} height={13} className="text-blue-500" />;
 }
 
 function ConfirmModal({ file, onConfirm, onCancel }) {
@@ -68,14 +68,14 @@ function ConfirmModal({ file, onConfirm, onCancel }) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <h2 className="text-slate-900 font-semibold text-base">Confirm upload</h2>
           <button onClick={onCancel} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-            <X size={16} />
+            <Cross2Icon width={16} height={16} />
           </button>
         </div>
 
         <div className="px-6 py-5 space-y-4">
           {/* File info */}
           <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
-            <FileText size={18} className="text-blue-500 flex-shrink-0" />
+            <FileTextIcon width={18} height={18} className="text-blue-500 flex-shrink-0" />
             <div className="min-w-0">
               <p className="text-slate-800 text-sm font-medium truncate">{file.name}</p>
               <p className="text-slate-400 text-xs">
@@ -92,7 +92,7 @@ function ConfirmModal({ file, onConfirm, onCancel }) {
               }`}
               onClick={() => setChecked((v) => !v)}
             >
-              {checked && <CheckCircle size={10} className="text-white" />}
+              {checked && <CheckCircledIcon width={10} height={10} className="text-white" />}
             </div>
             <span
               className="text-slate-600 text-sm leading-relaxed select-none"
@@ -130,7 +130,7 @@ function DeleteModal({ doc, onConfirm, onCancel }) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <h2 className="text-slate-900 font-semibold text-base">Delete document</h2>
           <button onClick={onCancel} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
-            <X size={16} />
+            <Cross2Icon width={16} height={16} />
           </button>
         </div>
         <div className="px-6 py-5">
@@ -227,10 +227,10 @@ export default function Documents() {
 
         {uploadError && (
           <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-            <AlertCircle size={15} className="text-red-500 flex-shrink-0" />
+            <InfoCircledIcon width={15} height={15} className="text-red-500 flex-shrink-0" />
             <p className="text-red-700 text-sm flex-1">{uploadError}</p>
             <button onClick={() => setUploadError('')} className="text-red-400 hover:text-red-600">
-              <X size={15} />
+              <Cross2Icon width={15} height={15} />
             </button>
           </div>
         )}
@@ -255,7 +255,7 @@ export default function Documents() {
             onChange={(e) => handleFiles(e.target.files)}
           />
           <div className={`w-12 h-12 mx-auto rounded-2xl flex items-center justify-center mb-4 transition-colors ${isDragging ? 'bg-blue-100' : 'bg-slate-100'}`}>
-            <Upload size={22} className={isDragging ? 'text-blue-500' : 'text-slate-400'} />
+            <UploadIcon width={22} height={22} className={isDragging ? 'text-blue-500' : 'text-slate-400'} />
           </div>
           <p className="text-slate-700 font-semibold text-base mb-1">
             {isDragging ? 'Drop to upload' : 'Drop files here or click to browse'}
@@ -267,7 +267,7 @@ export default function Documents() {
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <div className="flex items-center gap-2">
-              <FileText size={16} className="text-slate-500" />
+              <FileTextIcon width={16} height={16} className="text-slate-500" />
               <h3 className="text-slate-800 font-semibold text-sm">Document Library</h3>
               <span className="text-slate-400 text-xs bg-slate-100 px-2 py-0.5 rounded-full">{docs.length}</span>
             </div>
@@ -276,7 +276,7 @@ export default function Documents() {
           {docs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
               <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
-                <FilePlus size={26} className="text-slate-300" />
+                <FilePlusIcon width={26} height={26} className="text-slate-300" />
               </div>
               <h3 className="text-slate-700 font-semibold text-base mb-2">No documents yet</h3>
               <p className="text-slate-400 text-sm max-w-xs leading-relaxed">
@@ -286,7 +286,7 @@ export default function Documents() {
                 onClick={() => fileInputRef.current?.click()}
                 className="mt-5 inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
               >
-                <Upload size={15} />
+                <UploadIcon width={15} height={15} />
                 Upload first document
               </button>
             </div>
@@ -312,7 +312,7 @@ export default function Documents() {
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {sortedDocs.map((doc) => {
-                    const Icon = FILE_ICONS[doc.type] || FileText;
+                    const Icon = FILE_ICONS[doc.type] || FileTextIcon;
                     const s = STATUS_CONFIG[doc.status] || STATUS_CONFIG.Processing;
                     const StatusIcon = s.icon;
                     const isSpinning = doc.status === 'Uploading';
@@ -320,7 +320,7 @@ export default function Documents() {
                       <tr key={doc.id} className="hover:bg-slate-50/50 transition-colors">
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-2.5">
-                            <Icon size={15} className="text-blue-400 flex-shrink-0" />
+                            <Icon width={15} height={15} className="text-blue-400 flex-shrink-0" />
                             <span className="text-slate-800 font-medium truncate max-w-[180px] sm:max-w-xs">{doc.name}</span>
                           </div>
                         </td>
@@ -331,7 +331,7 @@ export default function Documents() {
                         <td className="px-5 py-3.5 text-slate-500 whitespace-nowrap">{doc.size}</td>
                         <td className="px-5 py-3.5">
                           <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${s.className}`}>
-                            <StatusIcon size={11} className={isSpinning ? 'animate-spin' : ''} />
+                            <StatusIcon width={11} height={11} className={isSpinning ? 'animate-spin' : ''} />
                             {s.label}
                           </span>
                         </td>
@@ -342,7 +342,7 @@ export default function Documents() {
                             className="p-1.5 text-slate-300 hover:text-red-400 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                             title="Delete"
                           >
-                            <Trash2 size={14} />
+                            <TrashIcon width={14} height={14} />
                           </button>
                         </td>
                       </tr>

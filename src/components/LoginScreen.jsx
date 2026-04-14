@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { CheckCircledIcon, EyeOpenIcon, EyeClosedIcon, InfoCircledIcon } from '@radix-ui/react-icons';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginScreen() {
@@ -58,7 +58,7 @@ export default function LoginScreen() {
       <div className="w-full max-w-sm">
         <Link to="/" className="flex items-center gap-2.5 justify-center mb-8">
           <div className="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center">
-            <ShieldCheck size={18} className="text-white" />
+            <CheckCircledIcon width={18} height={18} className="text-white" />
           </div>
           <span className="text-white font-bold text-xl">DiligenceAI</span>
         </Link>
@@ -102,14 +102,14 @@ export default function LoginScreen() {
 
           {error && (
             <div className="flex items-center gap-2.5 bg-red-500/10 border border-red-500/25 rounded-xl px-4 py-3 mb-5">
-              <AlertCircle size={15} className="text-red-400 flex-shrink-0" />
+              <InfoCircledIcon width={15} height={15} className="text-red-400 flex-shrink-0" />
               <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
 
           {info && (
             <div className="flex items-center gap-2.5 bg-blue-500/10 border border-blue-500/25 rounded-xl px-4 py-3 mb-5">
-              <AlertCircle size={15} className="text-blue-300 flex-shrink-0" />
+              <InfoCircledIcon width={15} height={15} className="text-blue-300 flex-shrink-0" />
               <p className="text-blue-200 text-sm">{info}</p>
             </div>
           )}
@@ -154,7 +154,7 @@ export default function LoginScreen() {
                   className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-500 hover:text-slate-300 transition-colors"
                   tabIndex={-1}
                 >
-                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPass ? <EyeClosedIcon width={16} height={16} /> : <EyeOpenIcon width={16} height={16} />}
                 </button>
               </div>
             </div>

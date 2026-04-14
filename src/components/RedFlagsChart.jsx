@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import { CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { CheckCircledIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 
 const SEV_COLOR = { High: '#EF4444', Medium: '#F59E0B', Low: '#3B82F6' };
 const SEV_ORDER = ['High', 'Medium', 'Low'];
@@ -11,7 +11,7 @@ export default function RedFlagsChart({ redFlags }) {
   if (!redFlags || redFlags.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-48 gap-2 text-slate-400">
-        <CheckCircle size={28} className="text-green-400" />
+        <CheckCircledIcon width={28} height={28} className="text-green-400" />
         <p className="text-sm">No red flags identified.</p>
       </div>
     );
@@ -50,7 +50,7 @@ export default function RedFlagsChart({ redFlags }) {
                 {flag.severity}
               </span>
               <span className="text-slate-700 text-xs font-medium flex-1 truncate">{flag.title}</span>
-              {expanded === flag.id ? <ChevronUp size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
+              {expanded === flag.id ? <ChevronUpIcon width={13} height={13} className="text-slate-400" /> : <ChevronDownIcon width={13} height={13} className="text-slate-400" />}
             </button>
             {expanded === flag.id && flag.description && (
               <div className="px-3.5 pb-3 pt-0">

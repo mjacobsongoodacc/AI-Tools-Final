@@ -1,6 +1,20 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Activity, Flag, TrendingUp, ClipboardList, BarChart3, Upload, ArrowRight, FileText } from 'lucide-react';
+import { useState, useEffect, createElement } from 'react';
+import { motion as Motion } from 'framer-motion';
+import {
+  ActivityLogIcon,
+  DrawingPinIcon,
+  ArrowUpIcon,
+  ClipboardIcon,
+  BarChartIcon,
+  UploadIcon,
+  ArrowRightIcon,
+  FileTextIcon,
+  PieChartIcon,
+  LightningBoltIcon,
+  TableIcon,
+  GlobeIcon,
+  TimerIcon,
+} from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 import AppLayout from '../components/AppLayout';
 import DashboardNotificationBell from '../components/DashboardNotificationBell';
@@ -10,6 +24,12 @@ import RedFlagsChart from '../components/RedFlagsChart';
 import KPITable from '../components/KPITable';
 import MissingDataProgress from '../components/MissingDataProgress';
 import ComparableCompanies from '../components/ComparableCompanies';
+import AgentConfidenceBars from '../components/AgentConfidenceBars';
+import ARRGrowthChart from '../components/ARRGrowthChart';
+import BurnRunwayChart from '../components/BurnRunwayChart';
+import UnitEconomicsGrid from '../components/UnitEconomicsGrid';
+import MarketSizingBars from '../components/MarketSizingBars';
+import TractionTrajectory from '../components/TractionTrajectory';
 import { useAuth } from '../contexts/AuthContext';
 import { getUserFirstName } from '../utils/authUserDisplay';
 import { useDocuments } from '../context/DocumentsContext';
@@ -25,11 +45,11 @@ function timeAgo(iso) {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
-function MetricPanel({ title, icon: Icon, children, fullWidth = false }) {
+function MetricPanel({ title, icon, children, fullWidth = false }) {
   return (
     <div className={`bg-white border border-slate-200 rounded-2xl overflow-hidden${fullWidth ? ' lg:col-span-2' : ''}`}>
       <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
-        <Icon size={15} className="text-slate-500" />
+        {createElement(icon, { width: 15, height: 15, className: 'text-slate-500' })}
         <h3 className="text-slate-800 font-semibold text-sm">{title}</h3>
       </div>
       <div className="px-5 py-4">{children}</div>
@@ -77,7 +97,7 @@ export default function Dashboard() {
             to="/documents"
             className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
           >
-            <Upload size={15} />
+            <UploadIcon width={15} height={15} />
             Upload
           </Link>
         </div>
@@ -86,7 +106,7 @@ export default function Dashboard() {
         {!analysis && (
           <div className="bg-[#0F172A] border border-slate-700/50 rounded-2xl px-6 py-10 flex flex-col items-center text-center gap-4">
             <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center">
-              <BarChart3 size={22} className="text-blue-400" />
+              <BarChartIcon width={22} height={22} className="text-blue-400" />
             </div>
             <div>
               <p className="text-white font-semibold text-base mb-1">No analysis available yet</p>
@@ -94,10 +114,10 @@ export default function Dashboard() {
             </div>
             <div className="flex gap-3">
               <Link to="/documents" className="inline-flex items-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
-                <Upload size={14} /> Upload docs
+                <UploadIcon width={14} height={14} /> Upload docs
               </Link>
               <Link to="/analysis" className="inline-flex items-center gap-1.5 border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 text-sm font-medium px-4 py-2 rounded-xl transition-colors">
-                Run analysis <ArrowRight size={14} />
+                Run analysis <ArrowRightIcon width={14} height={14} />
               </Link>
             </div>
           </div>
@@ -113,53 +133,89 @@ export default function Dashboard() {
         )}
 
         {/* Metrics grid */}
-        <motion.div
+        <Motion.div
           variants={container}
           initial="hidden"
           animate="show"
           className="grid grid-cols-1 lg:grid-cols-2 gap-5"
         >
-          <motion.div variants={item}>
-            <MetricPanel title="Agent Confidence" icon={Activity}>
+          <Motion.div variants={item}>
+            <MetricPanel title="Agent Confidence" icon={ActivityLogIcon}>
               <AgentRadarChart confidenceScores={analysis?.confidenceScores ?? {}} />
             </MetricPanel>
-          </motion.div>
+          </Motion.div>
 
-          <motion.div variants={item}>
-            <MetricPanel title="Red Flags" icon={Flag}>
+          <Motion.div variants={item}>
+            <MetricPanel title="Agent Confidence (bars)" icon={PieChartIcon}>
+              <AgentConfidenceBars confidenceScores={analysis?.confidenceScores ?? {}} />
+            </MetricPanel>
+          </Motion.div>
+
+          <Motion.div variants={item}>
+            <MetricPanel title="Red Flags" icon={DrawingPinIcon}>
               <RedFlagsChart redFlags={analysis?.redFlags ?? []} />
             </MetricPanel>
-          </motion.div>
+          </Motion.div>
 
-          <motion.div variants={item}>
-            <MetricPanel title="KPI Extraction" icon={TrendingUp}>
+          <Motion.div variants={item}>
+            <MetricPanel title="KPI Extraction" icon={ArrowUpIcon}>
               <KPITable kpis={analysis?.kpis ?? []} />
             </MetricPanel>
-          </motion.div>
+          </Motion.div>
 
-          <motion.div variants={item}>
-            <MetricPanel title="Missing Data" icon={ClipboardList}>
+          <Motion.div variants={item} className="lg:col-span-2">
+            <MetricPanel title="Missing Data" icon={ClipboardIcon} fullWidth>
               <MissingDataProgress missingData={analysis?.missingData ?? []} />
             </MetricPanel>
-          </motion.div>
+          </Motion.div>
 
-          <motion.div variants={item} className="lg:col-span-2">
-            <MetricPanel title="Comparable Companies" icon={BarChart3} fullWidth>
+          <Motion.div variants={item}>
+            <MetricPanel title="ARR Growth" icon={ArrowUpIcon}>
+              <ARRGrowthChart arrHistory={analysis?.financials?.arrHistory ?? []} />
+            </MetricPanel>
+          </Motion.div>
+
+          <Motion.div variants={item}>
+            <MetricPanel title="Burn & Runway" icon={LightningBoltIcon}>
+              <BurnRunwayChart financials={analysis?.financials ?? {}} />
+            </MetricPanel>
+          </Motion.div>
+
+          <Motion.div variants={item} className="lg:col-span-2">
+            <MetricPanel title="Unit Economics" icon={TableIcon} fullWidth>
+              <UnitEconomicsGrid unitEconomics={analysis?.financials?.unitEconomics ?? null} />
+            </MetricPanel>
+          </Motion.div>
+
+          <Motion.div variants={item}>
+            <MetricPanel title="Market Sizing" icon={GlobeIcon}>
+              <MarketSizingBars market={analysis?.market ?? {}} />
+            </MetricPanel>
+          </Motion.div>
+
+          <Motion.div variants={item}>
+            <MetricPanel title="Traction" icon={TimerIcon}>
+              <TractionTrajectory tractionTimeline={analysis?.tractionTimeline ?? []} />
+            </MetricPanel>
+          </Motion.div>
+
+          <Motion.div variants={item} className="lg:col-span-2">
+            <MetricPanel title="Comparable Companies" icon={BarChartIcon} fullWidth>
               <ComparableCompanies comparables={analysis?.market?.comparables ?? []} />
             </MetricPanel>
-          </motion.div>
-        </motion.div>
+          </Motion.div>
+        </Motion.div>
 
         {/* Recent documents — compact */}
         {docs.length > 0 && (
           <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <FileText size={15} className="text-slate-500" />
+                <FileTextIcon width={15} height={15} className="text-slate-500" />
                 <h3 className="text-slate-800 font-semibold text-sm">Recent Documents</h3>
               </div>
               <Link to="/documents" className="text-blue-500 hover:text-blue-600 text-xs font-medium flex items-center gap-1">
-                View all <ArrowRight size={11} />
+                View all <ArrowRightIcon width={11} height={11} />
               </Link>
             </div>
             <div className="divide-y divide-slate-50">
@@ -167,7 +223,7 @@ export default function Dashboard() {
                 const statusColor = { Ready: 'text-green-500', Processing: 'text-amber-500', Uploading: 'text-blue-500', Error: 'text-red-500' }[doc.status] ?? 'text-slate-400';
                 return (
                   <div key={doc.id} className="flex items-center gap-3.5 px-5 py-3">
-                    <FileText size={13} className="text-blue-400 flex-shrink-0" />
+                    <FileTextIcon width={13} height={13} className="text-blue-400 flex-shrink-0" />
                     <span className="text-slate-700 text-sm flex-1 truncate">{doc.name}</span>
                     <span className="text-slate-400 text-xs">{timeAgo(doc.uploadedAt)}</span>
                     <span className={`text-xs font-medium ${statusColor}`}>{doc.status}</span>

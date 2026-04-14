@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUpIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 
 function ConfidencePill({ score }) {
   const cfg =
@@ -37,8 +37,8 @@ export default function KPITable({ kpis }) {
   });
 
   const SortIcon = ({ k }) => sortKey !== k ? null : sortDir === 'asc'
-    ? <ChevronUp size={12} className="text-blue-500 inline ml-0.5" />
-    : <ChevronDown size={12} className="text-blue-500 inline ml-0.5" />;
+    ? <ChevronUpIcon width={12} height={12} className="text-blue-500 inline ml-0.5" />
+    : <ChevronDownIcon width={12} height={12} className="text-blue-500 inline ml-0.5" />;
 
   const cols = [
     { key: 'metric', label: 'Metric' },

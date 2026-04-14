@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircledIcon } from '@radix-ui/react-icons';
 
 const PRI_STYLE = {
   High: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' },
@@ -14,7 +14,7 @@ export default function MissingDataProgress({ missingData }) {
   if (!missingData || missingData.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-40 gap-2 text-slate-400">
-        <CheckCircle size={28} className="text-green-400" />
+        <CheckCircledIcon width={28} height={28} className="text-green-400" />
         <p className="text-sm">All required data present.</p>
       </div>
     );
@@ -66,7 +66,7 @@ export default function MissingDataProgress({ missingData }) {
                   checked ? 'bg-blue-500 border-blue-500' : 'border-slate-300 group-hover:border-blue-400'
                 }`}
               >
-                {checked && <CheckCircle size={9} className="text-white" />}
+                {checked && <CheckCircledIcon width={9} height={9} className="text-white" />}
               </div>
               <span className={`text-xs leading-relaxed flex-1 ${checked ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
                 {item.item}

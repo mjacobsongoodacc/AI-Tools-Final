@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Webhook, CheckCircle, Save, Eye, EyeOff, ShieldCheck, FileText } from 'lucide-react';
+import {
+  Share2Icon,
+  CheckCircledIcon,
+  UpdateIcon,
+  EyeOpenIcon,
+  EyeClosedIcon,
+  FileTextIcon,
+} from '@radix-ui/react-icons';
 import { useDocuments } from '../context/DocumentsContext';
 import { isWorkflowEditorUrl, resolveAnalysisWebhookFetchUrl } from '../utils/analysisWebhook';
 import {
@@ -88,7 +95,7 @@ function AdminWebhookField({ label, description, value, onSave, placeholder }) {
           <p className="text-slate-500 text-xs mt-0.5 leading-relaxed">{description}</p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
-          {saved && <CheckCircle size={14} className="text-green-400" />}
+          {saved && <CheckCircledIcon width={14} height={14} className="text-green-400" />}
           {!editing ? (
             <button
               type="button"
@@ -104,7 +111,7 @@ function AdminWebhookField({ label, description, value, onSave, placeholder }) {
               disabled={draft.length > 0 && !isValid(draft)}
               className="flex items-center gap-1 text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-600 disabled:text-slate-400 text-xs font-semibold px-2.5 py-1 rounded-lg transition-colors"
             >
-              <Save size={11} /> Save
+              <UpdateIcon width={11} height={11} /> Save
             </button>
           )}
         </div>
@@ -128,7 +135,7 @@ function AdminWebhookField({ label, description, value, onSave, placeholder }) {
             onClick={() => setShow((v) => !v)}
             className="mt-1.5 text-slate-500 hover:text-slate-400 text-xs flex items-center gap-1"
           >
-            {show ? <EyeOff size={12} /> : <Eye size={12} />}
+            {show ? <EyeClosedIcon width={12} height={12} /> : <EyeOpenIcon width={12} height={12} />}
             {show ? 'Hide URL' : 'Show URL'}
           </button>
         </div>
@@ -136,7 +143,7 @@ function AdminWebhookField({ label, description, value, onSave, placeholder }) {
         <div className="mt-2">
           {value ? (
             <div className="flex items-center gap-2 bg-[#0F172A] border border-slate-600 rounded-xl px-3 py-2">
-              <Webhook size={13} className="text-blue-400 flex-shrink-0" />
+              <Share2Icon width={13} height={13} className="text-blue-400 flex-shrink-0" />
               <span className="text-slate-400 text-xs font-mono truncate">
                 {value.replace(/^(https?:\/\/[^/]+).*/, '$1')}/••••••••
               </span>
@@ -146,7 +153,7 @@ function AdminWebhookField({ label, description, value, onSave, placeholder }) {
             </div>
           ) : (
             <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 border-dashed rounded-xl px-3 py-2">
-              <Webhook size={13} className="text-amber-400 flex-shrink-0" />
+              <Share2Icon width={13} height={13} className="text-amber-400 flex-shrink-0" />
               <span className="text-amber-200/90 text-xs">Not configured — optional; documents stay local without it</span>
             </div>
           )}
@@ -312,7 +319,7 @@ export default function Admin() {
 
         <div className="bg-[#1E293B] border border-slate-700/50 rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-4">
-            <ShieldCheck size={18} className="text-blue-400" />
+            <CheckCircledIcon width={18} height={18} className="text-blue-400" />
             <h2 className="text-white font-semibold text-sm">Workspace health</h2>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -362,7 +369,7 @@ export default function Admin() {
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div className="flex items-start gap-2 min-w-0">
-                          <FileText size={16} className="text-slate-500 flex-shrink-0 mt-0.5" />
+                          <FileTextIcon width={16} height={16} className="text-slate-500 flex-shrink-0 mt-0.5" />
                           <div className="min-w-0">
                             <p className="text-white font-medium text-sm">{item.companyName}</p>
                             <p className="text-slate-500 text-xs mt-0.5">
@@ -404,7 +411,7 @@ export default function Admin() {
 
         <div className="bg-[#1E293B] border border-slate-700/50 rounded-2xl overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-700/50 flex items-center gap-2.5">
-            <Webhook size={18} className="text-slate-400" />
+            <Share2Icon width={18} height={18} className="text-slate-400" />
             <div>
               <h2 className="text-white font-semibold text-sm">Webhooks & analysis endpoint</h2>
               <p className="text-slate-500 text-xs mt-0.5">

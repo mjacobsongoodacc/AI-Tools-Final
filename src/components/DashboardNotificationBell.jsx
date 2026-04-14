@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { Bell } from 'lucide-react';
+import { BellIcon } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 import {
   getNotifications,
@@ -33,7 +33,7 @@ export default function DashboardNotificationBell({ errorCount = 0 }) {
         className="relative p-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
         aria-label="Notifications"
       >
-        <Bell size={20} strokeWidth={2} />
+        <BellIcon width={20} height={20} />
         {showDot && (
           <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
         )}
