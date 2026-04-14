@@ -1,18 +1,54 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { pushNotification } from '../utils/notifications';
+import {
+  cacheDocFile,
+  deleteCachedDocFile,
+  clearCachedDocFiles,
+} from '../utils/docFileCache';
 
 const STORAGE_KEY = 'dd_documents';
 const WEBHOOK_KEY = 'dd_upload_webhook_url';
 const ANALYSIS_WEBHOOK_KEY = 'dd_analysis_webhook_url';
 
+function isPdfDocShape(d) {
+  return (
+    (typeof d.name === 'string' && d.name.toLowerCase().endsWith('.pdf')) ||
+    String(d.type || '').toUpperCase() === 'PDF'
+  );
+}
+
+/** Drop `content` for PDFs — plain text is set only after pdf.js extraction in runDiligenceWorkflow. */
+function stripPdfContentField(d) {
+  if (!isPdfDocShape(d)) return d;
+  const { content: _omit, ...rest } = d;
+  return rest;
+}
+
+/** localStorage is ~5–10MB; never persist base64 data URLs or very large strings. */
+const MAX_PERSISTED_CONTENT_CHARS = 500_000;
+
+function serializeDocsForStorage(docs) {
+  return docs.map((d) => {
+    const { file: _f, ...rest } = d;
+    if (isPdfDocShape(rest)) {
+      const { content: __, ...pdfRest } = rest;
+      return pdfRest;
+    }
+    const c = rest.content;
+    if (c == null || typeof c !== 'string') return rest;
+    if (c.startsWith('data:') || c.length > MAX_PERSISTED_CONTENT_CHARS) {
+      return { ...rest, content: null };
+    }
+    return rest;
+  });
+}
+
 const DocumentsContext = createContext(null);
 
 /**
  * Reads file content using the FileReader API.
- *   - .txt             → readAsText()     (returns plain UTF-8 string)
- *   - .pdf/.docx/.xlsx → readAsDataURL()  (returns base64 data URI)
- *     NOTE: proper text extraction from binary formats would require a
- *     parsing library (e.g. pdf-parse, mammoth, xlsx). The base64 string
- *     is stored here so it can be forwarded to n8n for server-side parsing.
+ *   - .txt   → readAsText() (plain UTF-8 string)
+ *   - other  → readAsDataURL() for non-PDF binary (e.g. docx). PDFs are not read here.
  */
 function readFileContent(file) {
   return new Promise((resolve) => {
@@ -22,11 +58,13 @@ function readFileContent(file) {
     reader.onload = (e) => resolve(e.target.result);
     reader.onerror = () => resolve(null);
 
+    if (ext === 'pdf') {
+      resolve(null);
+      return;
+    }
     if (ext === 'txt') {
       reader.readAsText(file);
     } else {
-      // .pdf, .docx, .xlsx — store as base64 data URI
-      // NOTE: proper text extraction would require a parsing library
       reader.readAsDataURL(file);
     }
   });
@@ -35,7 +73,8 @@ function readFileContent(file) {
 export function DocumentsProvider({ children }) {
   const [docs, setDocs] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? [];
+      const raw = JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? [];
+      return Array.isArray(raw) ? raw.map(stripPdfContentField) : [];
     } catch {
       return [];
     }
@@ -49,9 +88,19 @@ export function DocumentsProvider({ children }) {
     () => localStorage.getItem(ANALYSIS_WEBHOOK_KEY) ?? ''
   );
 
-  // Persist docs to localStorage whenever they change
+  // Persist docs to localStorage whenever they change (omit huge binary content)
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(docs));
+    const payload = serializeDocsForStorage(docs);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch (e) {
+      if (e?.name === 'QuotaExceededError') {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(serializeDocsForStorage(docs))
+        );
+      }
+    }
   }, [docs]);
 
   const saveUploadWebhook = (url) => {
@@ -74,6 +123,7 @@ export function DocumentsProvider({ children }) {
   const uploadDocument = useCallback(async (file) => {
     const id = `doc_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     const ext = file.name.split('.').pop().toUpperCase();
+    const lowerExt = ext.toLowerCase();
     const record = {
       id,
       name: file.name,
@@ -83,15 +133,25 @@ export function DocumentsProvider({ children }) {
       status: 'Uploading',
       webhookStatus: null,
       webhookResponse: null,
-      content: null,
+      file,
+      ...(lowerExt === 'pdf' ? {} : { content: null }),
     };
 
     setDocs((prev) => [record, ...prev]);
 
-    // Read file content and attach it to the doc so Analysis can forward it to n8n
-    const content = await readFileContent(file);
+    await cacheDocFile(id, file).catch(() => {});
+
+    // Text / non-PDF: store string or data URL on `content`. PDFs: no `content` until runDiligenceWorkflow extracts text.
+    const content = lowerExt === 'pdf' ? undefined : await readFileContent(file);
     setDocs((prev) =>
-      prev.map((d) => (d.id === id ? { ...d, content } : d))
+      prev.map((d) => {
+        if (d.id !== id) return d;
+        if (lowerExt === 'pdf') {
+          const { content: _omit, ...rest } = d;
+          return rest;
+        }
+        return { ...d, content };
+      })
     );
 
     if (!uploadWebhookUrl) {
@@ -101,8 +161,19 @@ export function DocumentsProvider({ children }) {
           d.id === id ? { ...d, status: 'Ready', webhookStatus: 'skipped' } : d
         )
       );
+      pushNotification({
+        type: 'success',
+        title: 'Document ready',
+        body: `${file.name} is ready in your workspace.`,
+        href: '/documents',
+      });
       return { success: true, skipped: true };
     }
+
+    const uploadTimeoutMs = Number.parseInt(
+      import.meta.env.VITE_DOCUMENT_UPLOAD_TIMEOUT_MS?.trim() ?? '',
+      10
+    );
 
     try {
       const formData = new FormData();
@@ -113,10 +184,12 @@ export function DocumentsProvider({ children }) {
       formData.append('documentId', id);
       formData.append('uploadedAt', record.uploadedAt);
 
-      const res = await fetch(uploadWebhookUrl, {
-        method: 'POST',
-        body: formData,
-      });
+      const fetchOpts =
+        Number.isFinite(uploadTimeoutMs) && uploadTimeoutMs > 0
+          ? { method: 'POST', body: formData, signal: AbortSignal.timeout(uploadTimeoutMs) }
+          : { method: 'POST', body: formData };
+
+      const res = await fetch(uploadWebhookUrl, fetchOpts);
 
       const webhookStatus = res.ok ? 'success' : 'error';
       let webhookResponse = null;
@@ -135,16 +208,49 @@ export function DocumentsProvider({ children }) {
         )
       );
 
+      if (res.ok) {
+        pushNotification({
+          type: 'success',
+          title: 'Document ready',
+          body: `${file.name} finished processing and is ready for analysis.`,
+          href: '/documents',
+        });
+      } else {
+        pushNotification({
+          type: 'error',
+          title: 'Document error',
+          body: `${file.name} could not be processed (HTTP ${res.status}).`,
+          href: '/documents',
+        });
+      }
+
       return { success: res.ok, status: res.status };
     } catch (err) {
+      const timedOut =
+        err?.name === 'TimeoutError' ||
+        err?.name === 'AbortError' ||
+        /timed out|aborted/i.test(String(err?.message ?? ''));
+      const message = timedOut
+        ? `Upload request timed out${
+            Number.isFinite(uploadTimeoutMs) && uploadTimeoutMs > 0
+              ? ` (${uploadTimeoutMs}ms limit; set VITE_DOCUMENT_UPLOAD_TIMEOUT_MS)`
+              : ''
+          }.`
+        : err.message;
       setDocs((prev) =>
         prev.map((d) =>
           d.id === id
-            ? { ...d, status: 'Error', webhookStatus: 'error', webhookResponse: err.message }
+            ? { ...d, status: 'Error', webhookStatus: 'error', webhookResponse: message }
             : d
         )
       );
-      return { success: false, error: err.message };
+      pushNotification({
+        type: 'error',
+        title: 'Upload failed',
+        body: `${file.name}: ${message}`,
+        href: '/documents',
+      });
+      return { success: false, error: message };
     }
   }, [uploadWebhookUrl]);
 
@@ -173,10 +279,12 @@ export function DocumentsProvider({ children }) {
   }, [analysisWebhookUrl, docs]);
 
   const deleteDocument = useCallback((id) => {
+    void deleteCachedDocFile(id).catch(() => {});
     setDocs((prev) => prev.filter((d) => d.id !== id));
   }, []);
 
   const clearAllDocuments = useCallback(() => {
+    void clearCachedDocFiles().catch(() => {});
     setDocs([]);
   }, []);
 
