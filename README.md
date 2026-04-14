@@ -24,6 +24,8 @@ Open the URL Vite prints (default `http://localhost:5173`).
 |----------|---------|
 | `VITE_N8N_WEBHOOK_URL` | n8n **webhook production URL** (path contains `/webhook/`). Do not use the workflow editor URL. |
 | `VITE_SUPABASE_ANON_KEY` | Supabase anon key — used to poll `dilligencetable` until `status === 'complete'` after the webhook responds. |
+| `VITE_ANALYSIS_POLL_TIMEOUT_MS` | Optional. Max ms to wait for a completed `dilligencetable` row after the webhook returns. Default **600000** (10 minutes). Minimum enforced: **30000**. |
+| `VITE_DOCUMENT_UPLOAD_TIMEOUT_MS` | Optional. If set, upload `fetch` to your upload webhook uses `AbortSignal.timeout(ms)`. |
 
 Copy `.env.example` to `.env.local` and fill in values. `.env.local` is gitignored.
 
@@ -33,6 +35,17 @@ Copy `.env.example` to `.env.local` and fill in values. `.env.local` is gitignor
 2. **Run analysis** — `Analysis.jsx` restores `File` objects from IndexedDB when needed, then `buildAnalysisWebhookPayload` sends ready PDFs as `{ name, type, file }` (no upstream `content`).
 3. **`runDiligenceWorkflow`** — Uses **pdf.js** to extract text from each `File`, then POSTs JSON `{ companyName, companyId, documents }` where each document has string `content` (plain text) for n8n. The pdf.js worker is loaded via Vite’s `?url` import (`pdf.worker.min.mjs`).
 4. **Polling** — The client polls Supabase (`dilligencetable`) for the completed `result` for that `companyId` / run id.
+
+### n8n / Supabase `run_id` contract
+
+The JSON body sent to n8n includes **`companyId`** (same value as `submissionId` from the Analysis page). The poller looks for a row where **`run_id` equals that `companyId`** and **`status` is the string `complete`**, with a non-null **`result`**. Your n8n workflow must persist `run_id` using the webhook’s `companyId` (or the client will poll until timeout).
+
+### Troubleshooting “Analysis timed out”
+
+1. **Read the error text** — It includes the `run_id` searched and hints for `VITE_ANALYSIS_POLL_TIMEOUT_MS` and the n8n contract above.
+2. **Dev console** — In development, `runDiligenceWorkflow` logs when polling starts: `run_id`, interval, and timeout ms.
+3. **Network** — Inspect the webhook POST: status, time to response, and response body size (large extracted text + four PDFs can slow n8n).
+4. **Supabase** — Open `dilligencetable` and filter by `run_id` = the id shown in the error. Confirm a row appears, `status` becomes `complete`, and `result` is populated. If completion takes longer than your timeout, raise `VITE_ANALYSIS_POLL_TIMEOUT_MS`.
 
 ## Scripts
 

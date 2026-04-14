@@ -6,6 +6,17 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerUrl;
 
 const supabaseUrl = 'https://ohztnzrivotdueqafquw.supabase.co';
 
+const POLL_INTERVAL_MS = 3000;
+/** Default 10 minutes — multi-document n8n runs often exceed the previous 3-minute cap. */
+const DEFAULT_POLL_TIMEOUT_MS = 600_000;
+
+function resolvePollTimeoutMs() {
+  const raw = import.meta.env.VITE_ANALYSIS_POLL_TIMEOUT_MS?.trim();
+  const n = Number.parseInt(raw ?? '', 10);
+  if (Number.isFinite(n) && n >= 30_000) return n;
+  return DEFAULT_POLL_TIMEOUT_MS;
+}
+
 async function extractPDFText(file) {
   const buffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
@@ -65,10 +76,40 @@ export async function runDiligenceWorkflow(companyName, companyId, documents) {
 
   await res.text();
   const run_id = companyId;
+  const pollTimeoutMs = resolvePollTimeoutMs();
 
-  // 2. Poll Supabase every 3s until status === 'complete'
+  if (import.meta.env.DEV) {
+    // Helps distinguish Supabase poll timeout vs webhook/upload issues (see README).
+    console.info(
+      '[runDiligenceWorkflow] Polling dilligencetable for run_id=%s every %sms (timeout %sms)',
+      run_id,
+      POLL_INTERVAL_MS,
+      pollTimeoutMs
+    );
+  }
+
+  // 2. Poll Supabase until status === 'complete'
   return new Promise((resolve, reject) => {
-    const interval = setInterval(async () => {
+    let pollIntervalId;
+    let timeoutId;
+
+    const cleanup = () => {
+      clearInterval(pollIntervalId);
+      clearTimeout(timeoutId);
+    };
+
+    timeoutId = setTimeout(() => {
+      cleanup();
+      reject(
+        new Error(
+          `Analysis timed out after ${pollTimeoutMs}ms waiting for a dilligencetable row with run_id="${run_id}" and status="complete". ` +
+            `Set VITE_ANALYSIS_POLL_TIMEOUT_MS (ms) for longer n8n runs. ` +
+            `Confirm n8n writes run_id equal to the webhook body companyId (${run_id}).`
+        )
+      );
+    }, pollTimeoutMs);
+
+    pollIntervalId = setInterval(async () => {
       const { data, error } = await supabase
         .from('dilligencetable')
         .select('*')
@@ -80,15 +121,9 @@ export async function runDiligenceWorkflow(companyName, companyId, documents) {
 
       if (error) return; // keep polling
       if (data?.result) {
-        clearInterval(interval);
+        cleanup();
         resolve(data.result);
       }
-    }, 3000);
-
-    // Timeout after 3 minutes
-    setTimeout(() => {
-      clearInterval(interval);
-      reject(new Error('Analysis timed out'));
-    }, 180000);
+    }, POLL_INTERVAL_MS);
   });
 }

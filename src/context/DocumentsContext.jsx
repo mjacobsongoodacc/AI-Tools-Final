@@ -170,6 +170,11 @@ export function DocumentsProvider({ children }) {
       return { success: true, skipped: true };
     }
 
+    const uploadTimeoutMs = Number.parseInt(
+      import.meta.env.VITE_DOCUMENT_UPLOAD_TIMEOUT_MS?.trim() ?? '',
+      10
+    );
+
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -179,10 +184,12 @@ export function DocumentsProvider({ children }) {
       formData.append('documentId', id);
       formData.append('uploadedAt', record.uploadedAt);
 
-      const res = await fetch(uploadWebhookUrl, {
-        method: 'POST',
-        body: formData,
-      });
+      const fetchOpts =
+        Number.isFinite(uploadTimeoutMs) && uploadTimeoutMs > 0
+          ? { method: 'POST', body: formData, signal: AbortSignal.timeout(uploadTimeoutMs) }
+          : { method: 'POST', body: formData };
+
+      const res = await fetch(uploadWebhookUrl, fetchOpts);
 
       const webhookStatus = res.ok ? 'success' : 'error';
       let webhookResponse = null;
@@ -219,20 +226,31 @@ export function DocumentsProvider({ children }) {
 
       return { success: res.ok, status: res.status };
     } catch (err) {
+      const timedOut =
+        err?.name === 'TimeoutError' ||
+        err?.name === 'AbortError' ||
+        /timed out|aborted/i.test(String(err?.message ?? ''));
+      const message = timedOut
+        ? `Upload request timed out${
+            Number.isFinite(uploadTimeoutMs) && uploadTimeoutMs > 0
+              ? ` (${uploadTimeoutMs}ms limit; set VITE_DOCUMENT_UPLOAD_TIMEOUT_MS)`
+              : ''
+          }.`
+        : err.message;
       setDocs((prev) =>
         prev.map((d) =>
           d.id === id
-            ? { ...d, status: 'Error', webhookStatus: 'error', webhookResponse: err.message }
+            ? { ...d, status: 'Error', webhookStatus: 'error', webhookResponse: message }
             : d
         )
       );
       pushNotification({
         type: 'error',
         title: 'Upload failed',
-        body: `${file.name}: ${err.message}`,
+        body: `${file.name}: ${message}`,
         href: '/documents',
       });
-      return { success: false, error: err.message };
+      return { success: false, error: message };
     }
   }, [uploadWebhookUrl]);
 
