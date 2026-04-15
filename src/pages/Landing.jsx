@@ -381,10 +381,10 @@ export default function Landing() {
                 Built for institutional trust
               </h2>
               <p className="text-slate-400 text-base max-w-xl mx-auto mb-8 leading-relaxed">
-                Your documents are not used to train any models. Data is encrypted in transit and at rest. Built with venture, PE, and corporate development workflows in mind.
+                Your documents are not used to train any models. Built with venture, PE, and corporate development workflows in mind.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-slate-500">
-                {['Encryption in transit & at rest', 'No model training on your data', 'Document isolation per account', 'Built for sensitive deal data'].map((t) => (
+                {['No model training on your data', 'Document isolation per account', 'Built for sensitive deal data'].map((t) => (
                   <span key={t} className="flex items-center gap-1.5">
                     <CheckCircledIcon width={14} height={14} className="text-green-400" />
                     {t}
@@ -417,10 +417,10 @@ export default function Landing() {
                 Built for institutional trust
               </h2>
               <p className="text-slate-400 text-base max-w-xl mx-auto mb-8 leading-relaxed">
-                Your documents are not used to train any models. Data is encrypted in transit and at rest. Built with venture, PE, and corporate development workflows in mind.
+                Your documents are not used to train any models. Built with venture, PE, and corporate development workflows in mind.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-slate-500">
-                {['Encryption in transit & at rest', 'No model training on your data', 'Document isolation per account', 'Built for sensitive deal data'].map((t) => (
+                {['No model training on your data', 'Document isolation per account', 'Built for sensitive deal data'].map((t) => (
                   <span key={t} className="flex items-center gap-1.5">
                     <CheckCircledIcon width={14} height={14} className="text-green-400" />
                     {t}
@@ -507,7 +507,7 @@ export default function Landing() {
             <span className="text-slate-400 text-sm">DiligenceAI</span>
           </div>
           <p className="text-slate-600 text-xs">
-            © 2024 DiligenceAI. All rights reserved. For authorized use only.
+            © 2026 DiligenceAI. All rights reserved. For authorized use only.
           </p>
         </div>
       </footer>
