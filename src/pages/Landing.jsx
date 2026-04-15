@@ -21,47 +21,47 @@ const features = [
   {
     icon: StackIcon,
     title: 'Document Ingestion',
-    description: 'Upload PDF, DOCX, and XLSX files. We parse, chunk, and index every page automatically.',
+    description: 'Upload PDF, DOCX, and XLSX files. We parse, chunk, and index the content automatically.',
   },
   {
     icon: MagnifyingGlassIcon,
     title: 'RAG Retrieval',
-    description: 'Retrieval-augmented generation surfaces the exact passages behind every claim.',
+    description: 'Retrieval-augmented generation surfaces relevant passages to support each output.',
   },
   {
     icon: FileTextIcon,
     title: 'Executive Summaries',
-    description: 'Structured investment memos generated in seconds — ready for IC presentation.',
+    description: 'Get a structured draft summary of key findings — a starting point for your own review.',
   },
   {
     icon: ArrowUpIcon,
     title: 'KPI Extraction',
-    description: 'Automatically pull revenue, burn, margins, and 20+ other metrics with source citations.',
+    description: 'Pull key metrics like revenue, burn, and margins from uploaded documents, with source references.',
   },
   {
     icon: ExclamationTriangleIcon,
     title: 'Red Flag Detection',
-    description: 'Surface contradictions, missing data, and risk signals across all uploaded documents.',
+    description: 'Highlight potential gaps, contradictions, and risk signals across uploaded documents.',
   },
   {
     icon: ReaderIcon,
     title: 'Citation Tracking',
-    description: 'Every output links back to the exact document and page — fully auditable.',
+    description: 'Outputs reference the source documents they are drawn from, so you can verify findings yourself.',
   },
 ];
 
 const problems = [
-  'Manually combing through 200-page data rooms',
+  'Manually combing through large data rooms',
   'Inconsistent analysis across deal teams',
-  'No audit trail for AI-assisted conclusions',
-  'Days of work before your first IC memo',
+  'Hard to trace where AI-assisted conclusions came from',
+  'Significant time investment before a first draft memo',
 ];
 
 const solutions = [
-  'Structured output in under 60 seconds',
-  'Standardized framework across every deal',
-  'Full citation back to source documents',
-  'First draft ready before your next meeting',
+  'Structured output generated quickly from your documents',
+  'Consistent framework applied across every upload',
+  'Outputs reference the source documents they came from',
+  'A first draft to react to, not start from scratch',
 ];
 
 const problemGridVariants = {
@@ -137,7 +137,7 @@ export default function Landing() {
               </h1>
 
               <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed">
-                Upload your data room. Get a structured investment memo with cited KPIs, red flags, and competitive analysis — in under a minute.
+                Upload your data room. Get a structured first-pass summary with cited KPIs, flagged risks, and source references — without starting from a blank page.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
@@ -156,7 +156,7 @@ export default function Landing() {
                 </Link>
               </div>
 
-              <p className="text-slate-600 text-xs mt-4">No credit card required · SOC 2 compliant infrastructure</p>
+              <p className="text-slate-600 text-xs mt-4">Early access · Built with security in mind</p>
             </div>
 
             <div className="mt-12 lg:mt-0 w-full flex justify-center lg:justify-end">
@@ -169,10 +169,10 @@ export default function Landing() {
       {/* Stats bar */}
       <section className="border-y border-slate-700/50 bg-[#1E293B]/50 px-6 py-8">
         <div className="max-w-4xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-6">
-          <AnimatedStat value={78} suffix="%" label="Faster first-pass review" />
-          <AnimatedStat value={94} suffix="%" label="Citation accuracy" />
-          <AnimatedStat value={12} suffix="+" label="Document formats supported" />
-          <AnimatedStat value="SOC 2" label="Security ready" />
+          <AnimatedStat value="PDF" label="DOCX & XLSX supported" />
+          <AnimatedStat value="RAG" label="Retrieval-backed outputs" />
+          <AnimatedStat value="Cited" label="Source-referenced findings" />
+          <AnimatedStat value="Draft" label="Starting point, not final word" />
         </div>
       </section>
 
@@ -185,7 +185,7 @@ export default function Landing() {
                 From messy data rooms to clear outputs
               </h2>
               <p className="text-slate-400 text-base max-w-xl mx-auto">
-                Traditional due diligence is slow, inconsistent, and opaque. DiligenceAI changes that.
+                Traditional due diligence is slow, inconsistent, and hard to trace. DiligenceAI is built to help with that.
               </p>
             </div>
 
@@ -243,7 +243,7 @@ export default function Landing() {
                 From messy data rooms to clear outputs
               </h2>
               <p className="text-slate-400 text-base max-w-xl mx-auto">
-                Traditional due diligence is slow, inconsistent, and opaque. DiligenceAI changes that.
+                Traditional due diligence is slow, inconsistent, and hard to trace. DiligenceAI is built to help with that.
               </p>
             </div>
 
@@ -307,7 +307,7 @@ export default function Landing() {
                 Every layer of analysis, covered
               </h2>
               <p className="text-slate-400 text-base max-w-xl mx-auto">
-                Six integrated modules give you a complete picture of every deal.
+                Six modules work together to structure what's in your documents.
               </p>
             </div>
 
@@ -340,7 +340,7 @@ export default function Landing() {
                 Every layer of analysis, covered
               </h2>
               <p className="text-slate-400 text-base max-w-xl mx-auto">
-                Six integrated modules give you a complete picture of every deal.
+                Six modules work together to structure what's in your documents.
               </p>
             </div>
 
@@ -381,10 +381,10 @@ export default function Landing() {
                 Built for institutional trust
               </h2>
               <p className="text-slate-400 text-base max-w-xl mx-auto mb-8 leading-relaxed">
-                Your documents never train our models. All data is encrypted at rest and in transit. Configurable retention policies. Designed for venture, PE, and corporate development teams.
+                Your documents are not used to train any models. Data is encrypted in transit and at rest. Built with venture, PE, and corporate development workflows in mind.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-slate-500">
-                {['SOC 2 Ready', 'AES-256 Encryption', 'GDPR Compliant', 'No model training on your data'].map((t) => (
+                {['Encryption in transit & at rest', 'No model training on your data', 'Document isolation per account', 'Built for sensitive deal data'].map((t) => (
                   <span key={t} className="flex items-center gap-1.5">
                     <CheckCircledIcon width={14} height={14} className="text-green-400" />
                     {t}
@@ -417,10 +417,10 @@ export default function Landing() {
                 Built for institutional trust
               </h2>
               <p className="text-slate-400 text-base max-w-xl mx-auto mb-8 leading-relaxed">
-                Your documents never train our models. All data is encrypted at rest and in transit. Configurable retention policies. Designed for venture, PE, and corporate development teams.
+                Your documents are not used to train any models. Data is encrypted in transit and at rest. Built with venture, PE, and corporate development workflows in mind.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-slate-500">
-                {['SOC 2 Ready', 'AES-256 Encryption', 'GDPR Compliant', 'No model training on your data'].map((t) => (
+                {['Encryption in transit & at rest', 'No model training on your data', 'Document isolation per account', 'Built for sensitive deal data'].map((t) => (
                   <span key={t} className="flex items-center gap-1.5">
                     <CheckCircledIcon width={14} height={14} className="text-green-400" />
                     {t}
@@ -442,7 +442,7 @@ export default function Landing() {
               Ready to accelerate your diligence?
             </h2>
             <p className="text-slate-400 text-base mb-8">
-              Join investment teams using DiligenceAI to close deals faster.
+              Built for investment teams who want a faster, more consistent first pass on every deal.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
@@ -476,7 +476,7 @@ export default function Landing() {
               Ready to accelerate your diligence?
             </h2>
             <p className="text-slate-400 text-base mb-8">
-              Join investment teams using DiligenceAI to close deals faster.
+              Built for investment teams who want a faster, more consistent first pass on every deal.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
