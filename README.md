@@ -2,6 +2,10 @@
 
 React + Vite app for document intake, company-scoped analysis runs, and review flows. Analysis posts to an **n8n** webhook with **plain text** extracted from PDFs in the browser (**pdf.js**), then polls **Supabase** until the run completes.
 
+## UI
+
+The app uses a **dark chrome**: black surfaces (`#000000` / `#0A0A0A`), **off-white** primary text (`#FAFAFA` via Tailwind `white` / `bone-100`), and a single **red accent** (`#EF4444`). Semantic chart colors (green / amber / red for PASS / WATCH / FAIL style signals) are preserved for KPI and diligence visuals. Tailwind tokens live under `ink`, `bone`, and `accent` in `tailwind.config.js`.
+
 ## Requirements
 
 - Node 18+ (npm)
@@ -58,8 +62,12 @@ The JSON body sent to n8n includes **`companyId`** (same value as `submissionId`
 
 ## Stack
 
-- React 19, React Router, Tailwind
-- `@supabase/supabase-js`, `pdfjs-dist`
+- **React 19**, **React Router 7**, **Vite 8**
+- **Tailwind CSS 3.4** — utility styling; custom `ink` / `bone` / `accent` colors (no shadcn/ui)
+- **@radix-ui/react-icons**, **@headlessui/react** (menus), **framer-motion** (landing motion)
+- **recharts** (dashboard charts)
+- **@supabase/supabase-js**, **pdfjs-dist** (in-browser PDF text extraction)
+- **jspdf** (analysis PDF export from the Analysis page)
 - Deploy-friendly static build (e.g. Vercel — see `vercel.json` if present)
 
 ## License
