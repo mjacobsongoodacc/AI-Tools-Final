@@ -12,7 +12,13 @@ import {
 } from 'recharts';
 import { CHART_COLORS } from './palette.js';
 
-const tooltipCursor = { fill: '#F8FAFC' };
+const tooltipCursor = { fill: 'rgba(250,250,250,0.05)' };
+const tooltipContentStyle = {
+  borderRadius: 12,
+  border: '1px solid rgba(250,250,250,0.15)',
+  background: '#0A0A0A',
+  color: '#FAFAFA',
+};
 
 export default function BarChart({
   data = [],
@@ -32,7 +38,7 @@ export default function BarChart({
 
   if (!data.length) {
     return (
-      <div className="flex items-center justify-center text-slate-400 text-sm" style={{ height }}>
+      <div className="flex items-center justify-center text-bone-40 text-sm" style={{ height }}>
         No chart data yet.
       </div>
     );
@@ -43,6 +49,8 @@ export default function BarChart({
   const rechartsLayout = isHorizontal ? 'vertical' : 'horizontal';
   const radiusVertical = [4, 4, 0, 0];
   const radiusHorizontal = [0, 4, 4, 0];
+  const tickFill = 'rgba(250,250,250,0.70)';
+  const legendColor = 'rgba(250,250,250,0.70)';
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -57,7 +65,7 @@ export default function BarChart({
       >
         {showGridLines && (
           <CartesianGrid
-            stroke="#E2E8F0"
+            stroke="rgba(250,250,250,0.10)"
             strokeDasharray="3 3"
             vertical={isHorizontal}
             horizontal={!isHorizontal}
@@ -65,22 +73,22 @@ export default function BarChart({
         )}
         {isHorizontal ? (
           <>
-            <XAxis type="number" tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => fmt(v)} />
-            <YAxis type="category" dataKey={index} width={yAxisWidth} tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <XAxis type="number" tick={{ fill: tickFill, fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => fmt(v)} />
+            <YAxis type="category" dataKey={index} width={yAxisWidth} tick={{ fill: tickFill, fontSize: 11 }} axisLine={false} tickLine={false} />
           </>
         ) : (
           <>
-            <XAxis dataKey={index} tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis width={yAxisWidth} tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => fmt(v)} />
+            <XAxis dataKey={index} tick={{ fill: tickFill, fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis width={yAxisWidth} tick={{ fill: tickFill, fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => fmt(v)} />
           </>
         )}
         <Tooltip
           cursor={tooltipCursor}
           formatter={(v, name) => [fmt(v), name]}
-          labelStyle={{ color: '#64748B', fontSize: 11 }}
-          contentStyle={{ borderRadius: 12, border: '1px solid #e2e8f0' }}
+          labelStyle={{ color: 'rgba(250,250,250,0.70)', fontSize: 11 }}
+          contentStyle={tooltipContentStyle}
         />
-        {showLegend && <Legend wrapperStyle={{ fontSize: 11, color: '#64748B' }} />}
+        {showLegend && <Legend wrapperStyle={{ fontSize: 11, color: legendColor }} />}
         {categories.map((key, i) => (
           <Bar
             key={key}
@@ -92,15 +100,21 @@ export default function BarChart({
             maxBarSize={32}
           >
             {!stacked && categories.length === 1
-              ? data.map((_, j) => <Cell key={`cell-${j}`} fill={palette[j % palette.length]} />)
+              ? data.map((_, j) => (
+                  <Cell
+                    key={`cell-${j}`}
+                    fill="#000000"
+                    stroke="#FAFAFA"
+                    strokeWidth={1}
+                  />
+                ))
               : null}
             {showDataLabels && categories.length === 1 && i === 0 && (
               <LabelList
                 dataKey={key}
                 position={isHorizontal ? 'right' : 'top'}
                 formatter={(v) => (valueFormatter ? valueFormatter(v) : v)}
-                className="fill-slate-500"
-                style={{ fontSize: 10, fontFamily: 'DM Mono, ui-monospace, monospace' }}
+                style={{ fontSize: 10, fontFamily: 'DM Mono, ui-monospace, monospace', fill: '#FAFAFA' }}
               />
             )}
           </Bar>

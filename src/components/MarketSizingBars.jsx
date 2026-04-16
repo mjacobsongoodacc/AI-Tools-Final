@@ -17,7 +17,7 @@ export default function MarketSizingBars({ market }) {
 
   if (!hasAny) {
     return (
-      <div className="flex items-center justify-center min-h-[220px] text-slate-400 text-sm text-center px-4">
+      <div className="flex items-center justify-center min-h-[220px] text-bone-40 text-sm text-center px-4">
         Market sizing (TAM / SAM / SOM) will populate when the workflow returns <span className="font-mono-data text-xs">market.tam</span>, <span className="font-mono-data text-xs">market.sam</span>, and <span className="font-mono-data text-xs">market.som</span>.
       </div>
     );
@@ -40,7 +40,7 @@ export default function MarketSizingBars({ market }) {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-slate-600 leading-snug">{headline}</p>
+      <p className="text-sm text-bone-70 leading-snug">{headline}</p>
       <BarChart
         data={data}
         index="segment"
@@ -51,7 +51,7 @@ export default function MarketSizingBars({ market }) {
         yAxisWidth={44}
         showDataLabels
       />
-      <p className="text-[11px] text-slate-400">
+      <p className="text-[11px] text-bone-40">
         SOM label shows modeled near-term revenue pool; scales use compact currency notation.
       </p>
     </div>

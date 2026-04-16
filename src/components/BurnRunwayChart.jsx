@@ -24,7 +24,7 @@ export default function BurnRunwayChart({ financials }) {
 
   if (!hasSeries && !hasRunway) {
     return (
-      <div className="flex items-center justify-center min-h-[220px] text-slate-400 text-sm text-center px-4">
+      <div className="flex items-center justify-center min-h-[220px] text-bone-40 text-sm text-center px-4">
         Burn and runway data will appear once financials are extracted.
       </div>
     );
@@ -33,16 +33,16 @@ export default function BurnRunwayChart({ financials }) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-blue-100/40 border border-slate-300 rounded-sm px-4 py-3 shadow-sm">
-          <p className="text-slate-500 text-[10px] font-semibold uppercase tracking-wide mb-1">Runway</p>
-          <p className="font-mono-data text-2xl font-bold text-slate-900 leading-tight">
+        <div className="bg-bone-5 border border-bone-15 rounded-sm px-4 py-3">
+          <p className="text-bone-40 text-[10px] font-semibold uppercase tracking-wide mb-1">Runway</p>
+          <p className="font-mono-data text-2xl font-bold text-white leading-tight">
             {runwayMonths > 0 ? `${runwayMonths}` : '—'}
-            {runwayMonths > 0 && <span className="text-slate-500 text-sm font-semibold ml-1">mo</span>}
+            {runwayMonths > 0 && <span className="text-bone-40 text-sm font-semibold ml-1">mo</span>}
           </p>
         </div>
-        <div className="bg-blue-100/40 border border-slate-300 rounded-sm px-4 py-3 shadow-sm">
-          <p className="text-slate-500 text-[10px] font-semibold uppercase tracking-wide mb-1">Monthly Burn</p>
-          <p className="font-mono-data text-2xl font-bold text-slate-900 leading-tight">
+        <div className="bg-bone-5 border border-bone-15 rounded-sm px-4 py-3">
+          <p className="text-bone-40 text-[10px] font-semibold uppercase tracking-wide mb-1">Monthly Burn</p>
+          <p className="font-mono-data text-2xl font-bold text-white leading-tight">
             {latest && latest.burn > 0 ? formatMoneyCompact(latest.burn) : '—'}
           </p>
         </div>
@@ -52,14 +52,14 @@ export default function BurnRunwayChart({ financials }) {
           data={chartData}
           index="month"
           categories={['burn', 'cashBalance']}
-          colors={['#EF4444', '#3B82F6']}
+          colors={['#EF4444', '#FAFAFA']}
           height={240}
           valueFormatter={formatMoneyCompact}
           yAxisWidth={56}
           showLegend
         />
       ) : (
-        <div className="flex items-center justify-center h-40 text-slate-400 text-sm text-center px-4 border border-dashed border-slate-300 rounded-sm">
+        <div className="flex items-center justify-center h-40 text-bone-40 text-sm text-center px-4 border border-dashed border-bone-15 rounded-sm">
           Monthly burn and cash balance series will chart here once <span className="font-mono-data text-xs mx-1">financials.burnHistory</span> is present.
         </div>
       )}

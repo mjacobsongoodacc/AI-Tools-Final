@@ -33,13 +33,13 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5 py-5 border-b border-slate-700/50">
-        <div className="w-8 h-8 bg-blue-500 rounded-sm flex items-center justify-center flex-shrink-0">
+      <div className="flex items-center gap-2.5 px-5 py-5 border-b border-bone-15">
+        <div className="w-8 h-8 bg-accent rounded-sm flex items-center justify-center flex-shrink-0">
           <CheckCircledIcon width={16} height={16} className="text-white" />
         </div>
         <div className="min-w-0">
           <p className="text-white font-semibold text-sm leading-tight truncate">DiligenceAI</p>
-          <p className="text-slate-500 text-xs truncate">{mockWorkspace.name}</p>
+          <p className="text-bone-40 text-xs truncate">{mockWorkspace.name}</p>
         </div>
       </div>
 
@@ -53,16 +53,16 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium transition-colors group ${
                 isActive
-                  ? 'bg-blue-500/15 text-blue-400 border border-blue-500/20'
-                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/50'
+                  ? 'bg-accent/12 text-accent border border-accent/35'
+                  : 'text-bone-70 hover:text-white hover:bg-bone-5'
               }`
             }
           >
             {({ isActive }) => (
               <>
-                <Icon width={17} height={17} className={isActive ? 'text-blue-400' : 'text-slate-500 group-hover:text-slate-300'} />
+                <Icon width={17} height={17} className={isActive ? 'text-accent' : 'text-bone-40 group-hover:text-bone-70'} />
                 <span>{label}</span>
-                {isActive && <ChevronRightIcon width={14} height={14} className="ml-auto text-blue-400/60" />}
+                {isActive && <ChevronRightIcon width={14} height={14} className="ml-auto text-accent/60" />}
               </>
             )}
           </NavLink>
@@ -70,25 +70,25 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
       </nav>
 
       {/* User footer */}
-      <div className="px-3 py-3 border-t border-slate-700/50">
+      <div className="px-3 py-3 border-t border-bone-15">
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-sm mb-1">
-          <div className="w-7 h-7 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center flex-shrink-0">
-            <span className="text-blue-400 text-xs font-semibold">
+          <div className="w-7 h-7 rounded-full bg-accent/20 border border-accent/35 flex items-center justify-center flex-shrink-0">
+            <span className="text-accent text-xs font-semibold">
               {(getUserDisplayName(user) || user?.email || 'U').charAt(0).toUpperCase()}
             </span>
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-slate-200 text-xs font-medium truncate">
+            <p className="text-bone-70 text-xs font-medium truncate">
               {getUserDisplayName(user) || user?.email || 'User'}
             </p>
-            <p className="text-slate-500 text-xs truncate">{user?.email}</p>
+            <p className="text-bone-40 text-xs truncate">{user?.email}</p>
           </div>
         </div>
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm text-slate-400 hover:text-slate-100 hover:bg-slate-700/50 transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm text-bone-70 hover:text-white hover:bg-bone-5 transition-colors"
         >
-          <ExitIcon width={16} height={16} className="text-slate-500" />
+          <ExitIcon width={16} height={16} className="text-bone-40" />
           <span>Sign out</span>
         </button>
       </div>
@@ -98,7 +98,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-60 bg-[#0F172A] border-r border-slate-700/50 fixed inset-y-0 left-0 z-30">
+      <aside className="hidden lg:flex flex-col w-60 bg-black border-r border-bone-15 fixed inset-y-0 left-0 z-30">
         <SidebarContent />
       </aside>
 
@@ -112,14 +112,14 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
 
       {/* Mobile drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 w-64 bg-[#0F172A] border-r border-slate-700/50 z-50 lg:hidden transform transition-transform duration-200 ease-in-out ${
+        className={`fixed inset-y-0 left-0 w-64 bg-black border-r border-bone-15 z-50 lg:hidden transform transition-transform duration-200 ease-in-out ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="absolute top-4 right-4">
           <button
             onClick={() => setMobileOpen(false)}
-            className="p-1.5 text-slate-400 hover:text-slate-100 hover:bg-slate-700 rounded-sm"
+            className="p-1.5 text-bone-70 hover:text-white hover:bg-bone-5 rounded-sm"
           >
             <Cross2Icon width={18} height={18} />
           </button>
@@ -134,7 +134,7 @@ export function MobileMenuButton({ onClick }) {
   return (
     <button
       onClick={onClick}
-      className="lg:hidden p-2 text-slate-400 hover:text-slate-100 hover:bg-slate-700 rounded-sm"
+      className="lg:hidden p-2 text-bone-70 hover:text-white hover:bg-bone-5 rounded-sm"
       aria-label="Open menu"
     >
       <HamburgerMenuIcon width={20} height={20} />

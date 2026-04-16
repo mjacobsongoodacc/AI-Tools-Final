@@ -25,22 +25,22 @@ const FILE_ICONS = {
 const STATUS_CONFIG = {
   Ready: {
     label: 'Ready',
-    className: 'bg-green-500/10 text-green-600 border border-green-500/20',
+    className: 'bg-green-500/15 text-green-400 border border-green-500/35',
     icon: CheckCircledIcon,
   },
   Processing: {
     label: 'Processing',
-    className: 'bg-amber-500/10 text-amber-600 border border-amber-500/20',
+    className: 'bg-amber-500/15 text-amber-400 border border-amber-500/35',
     icon: ClockIcon,
   },
   Uploading: {
     label: 'Uploading…',
-    className: 'bg-blue-500/10 text-blue-600 border border-blue-500/20',
+    className: 'bg-white/5 text-white border border-bone-15',
     icon: ReloadIcon,
   },
   Error: {
     label: 'Error',
-    className: 'bg-red-500/10 text-red-600 border border-red-500/20',
+    className: 'bg-accent/15 text-accent border border-accent/35',
     icon: InfoCircledIcon,
   },
 };
@@ -53,32 +53,32 @@ function formatDate(iso) {
 
 function SortIcon({ column, sortBy, sortDir }) {
   if (sortBy !== column)
-    return <ChevronUpIcon width={13} height={13} className="text-slate-300 opacity-0 group-hover:opacity-100" />;
+    return <ChevronUpIcon width={13} height={13} className="text-bone-25 opacity-0 group-hover:opacity-100" />;
   return sortDir === 'asc'
-    ? <ChevronUpIcon width={13} height={13} className="text-blue-500" />
-    : <ChevronDownIcon width={13} height={13} className="text-blue-500" />;
+    ? <ChevronUpIcon width={13} height={13} className="text-accent" />
+    : <ChevronDownIcon width={13} height={13} className="text-accent" />;
 }
 
 function ConfirmModal({ file, onConfirm, onCancel }) {
   const [checked, setChecked] = useState(false);
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-      <div className="bg-blue-50 rounded-sm shadow-2xl w-full max-w-md border border-slate-300 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-300">
-          <h2 className="text-slate-900 font-semibold text-base">Confirm upload</h2>
-          <button onClick={onCancel} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-sm transition-colors">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+      <div className="bg-ink-50 rounded-sm w-full max-w-md border border-bone-15 overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-bone-15">
+          <h2 className="text-white font-semibold text-base">Confirm upload</h2>
+          <button onClick={onCancel} className="p-1.5 text-bone-40 hover:text-white hover:bg-bone-5 rounded-sm transition-colors">
             <Cross2Icon width={16} height={16} />
           </button>
         </div>
 
         <div className="px-6 py-5 space-y-4">
           {/* File info */}
-          <div className="flex items-center gap-3 bg-blue-100/40 border border-slate-300 rounded-sm px-4 py-3">
-            <FileTextIcon width={18} height={18} className="text-blue-500 flex-shrink-0" />
+          <div className="flex items-center gap-3 bg-bone-5 border border-bone-15 rounded-sm px-4 py-3">
+            <FileTextIcon width={18} height={18} className="text-accent flex-shrink-0" />
             <div className="min-w-0">
-              <p className="text-slate-800 text-sm font-medium truncate">{file.name}</p>
-              <p className="text-slate-400 text-xs">
+              <p className="text-white text-sm font-medium truncate">{file.name}</p>
+              <p className="text-bone-40 text-xs">
                 {(file.size / 1024 / 1024).toFixed(2)} MB · {file.name.split('.').pop().toUpperCase()}
               </p>
             </div>
@@ -88,14 +88,14 @@ function ConfirmModal({ file, onConfirm, onCancel }) {
           <label className="flex items-start gap-3 cursor-pointer group">
             <div
               className={`mt-0.5 w-4 h-4 rounded-sm flex items-center justify-center border-2 flex-shrink-0 transition-colors ${
-                checked ? 'bg-blue-500 border-blue-500' : 'border-slate-300 group-hover:border-blue-400'
+                checked ? 'bg-accent border-accent' : 'border-bone-25 group-hover:border-accent'
               }`}
               onClick={() => setChecked((v) => !v)}
             >
               {checked && <CheckCircledIcon width={10} height={10} className="text-white" />}
             </div>
             <span
-              className="text-slate-600 text-sm leading-relaxed select-none"
+              className="text-bone-70 text-sm leading-relaxed select-none"
               onClick={() => setChecked((v) => !v)}
             >
               I confirm these documents are authorized for analysis and I have the right to upload them to this platform.
@@ -103,17 +103,17 @@ function ConfirmModal({ file, onConfirm, onCancel }) {
           </label>
         </div>
 
-        <div className="flex gap-3 px-6 py-4 bg-blue-100/40 border-t border-slate-300">
+        <div className="flex gap-3 px-6 py-4 bg-bone-5 border-t border-bone-15">
           <button
             onClick={onCancel}
-            className="flex-1 border border-slate-200 text-slate-600 hover:bg-white font-medium py-2.5 rounded-sm text-sm transition-colors"
+            className="flex-1 bg-black border border-bone-25 text-bone-70 hover:bg-ink-50 hover:text-white font-medium py-2.5 rounded-sm text-sm transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={() => checked && onConfirm()}
             disabled={!checked}
-            className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold py-2.5 rounded-sm text-sm transition-colors"
+            className="flex-1 bg-accent hover:bg-accent-hover disabled:bg-accent/40 disabled:text-bone-25 text-white font-semibold py-2.5 rounded-sm text-sm transition-colors"
           >
             Upload document
           </button>
@@ -125,25 +125,25 @@ function ConfirmModal({ file, onConfirm, onCancel }) {
 
 function DeleteModal({ doc, onConfirm, onCancel }) {
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-      <div className="bg-blue-50 rounded-sm shadow-2xl w-full max-w-sm border border-slate-300 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-300">
-          <h2 className="text-slate-900 font-semibold text-base">Delete document</h2>
-          <button onClick={onCancel} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-sm">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+      <div className="bg-ink-50 rounded-sm w-full max-w-sm border border-bone-15 overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-bone-15">
+          <h2 className="text-white font-semibold text-base">Delete document</h2>
+          <button onClick={onCancel} className="p-1.5 text-bone-40 hover:text-white hover:bg-bone-5 rounded-sm">
             <Cross2Icon width={16} height={16} />
           </button>
         </div>
         <div className="px-6 py-5">
-          <p className="text-slate-600 text-sm leading-relaxed">
+          <p className="text-bone-70 text-sm leading-relaxed">
             Are you sure you want to delete{' '}
-            <span className="font-semibold text-slate-800">"{doc.name}"</span>? This removes it from the workspace only — it cannot be undone.
+            <span className="font-semibold text-white">"{doc.name}"</span>? This removes it from the workspace only — it cannot be undone.
           </p>
         </div>
-        <div className="flex gap-3 px-6 py-4 bg-blue-100/40 border-t border-slate-300">
-          <button onClick={onCancel} className="flex-1 border border-slate-200 text-slate-600 font-medium py-2.5 rounded-sm text-sm hover:bg-white transition-colors">
+        <div className="flex gap-3 px-6 py-4 bg-bone-5 border-t border-bone-15">
+          <button onClick={onCancel} className="flex-1 bg-black border border-bone-25 text-bone-70 hover:bg-ink-50 font-medium py-2.5 rounded-sm text-sm transition-colors">
             Cancel
           </button>
-          <button onClick={onConfirm} className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 rounded-sm text-sm transition-colors">
+          <button onClick={onConfirm} className="flex-1 bg-accent hover:bg-accent-hover text-white font-semibold py-2.5 rounded-sm text-sm transition-colors">
             Delete
           </button>
         </div>
@@ -226,10 +226,10 @@ export default function Documents() {
       <div className="max-w-5xl mx-auto space-y-5">
 
         {uploadError && (
-          <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-sm px-4 py-3">
-            <InfoCircledIcon width={15} height={15} className="text-red-500 flex-shrink-0" />
-            <p className="text-red-700 text-sm flex-1">{uploadError}</p>
-            <button onClick={() => setUploadError('')} className="text-red-400 hover:text-red-600">
+          <div className="flex items-center gap-3 bg-accent/10 border border-accent/35 rounded-sm px-4 py-3">
+            <InfoCircledIcon width={15} height={15} className="text-accent flex-shrink-0" />
+            <p className="text-white text-sm flex-1">{uploadError}</p>
+            <button onClick={() => setUploadError('')} className="text-accent hover:text-accent-hover">
               <Cross2Icon width={15} height={15} />
             </button>
           </div>
@@ -241,10 +241,10 @@ export default function Documents() {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onClick={() => fileInputRef.current?.click()}
-          className={`relative border-2 border-dashed rounded-sm px-6 py-12 text-center cursor-pointer transition-colors shadow-sm ${
+          className={`relative border-2 border-dashed rounded-sm px-6 py-12 text-center cursor-pointer transition-colors ${
             isDragging
-              ? 'border-blue-400 bg-blue-50'
-              : 'border-slate-300 bg-blue-50 hover:border-blue-300 hover:bg-blue-50/30'
+              ? 'border-accent bg-accent/5'
+              : 'border-bone-15 bg-black hover:border-accent/50 hover:bg-bone-5'
           }`}
         >
           <input
@@ -254,37 +254,37 @@ export default function Documents() {
             className="hidden"
             onChange={(e) => handleFiles(e.target.files)}
           />
-          <div className={`w-12 h-12 mx-auto rounded-sm flex items-center justify-center mb-4 transition-colors ${isDragging ? 'bg-blue-100' : 'bg-blue-100/40'}`}>
-            <UploadIcon width={22} height={22} className={isDragging ? 'text-blue-500' : 'text-slate-400'} />
+          <div className={`w-12 h-12 mx-auto rounded-sm flex items-center justify-center mb-4 transition-colors ${isDragging ? 'bg-accent/12' : 'bg-bone-5'}`}>
+            <UploadIcon width={22} height={22} className={isDragging ? 'text-accent' : 'text-bone-40'} />
           </div>
-          <p className="text-slate-700 font-semibold text-base mb-1">
+          <p className="text-bone-70 font-semibold text-base mb-1">
             {isDragging ? 'Drop to upload' : 'Drop files here or click to browse'}
           </p>
-          <p className="text-slate-400 text-sm">Accepts PDF, DOCX, XLSX — up to 50 MB each</p>
+          <p className="text-bone-40 text-sm">Accepts PDF, DOCX, XLSX — up to 50 MB each</p>
         </div>
 
         {/* Document library */}
-        <div className="bg-blue-50 border border-slate-300 rounded-sm overflow-hidden shadow-sm">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-300">
+        <div className="bg-black border border-bone-15 rounded-sm overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-bone-15">
             <div className="flex items-center gap-2">
-              <FileTextIcon width={16} height={16} className="text-slate-500" />
-              <h3 className="text-slate-800 font-semibold text-sm">Document Library</h3>
-              <span className="text-slate-400 text-xs bg-blue-100/40 px-2 py-0.5 rounded-full">{docs.length}</span>
+              <FileTextIcon width={16} height={16} className="text-bone-40" />
+              <h3 className="text-white font-semibold text-sm">Document Library</h3>
+              <span className="text-bone-40 text-xs bg-bone-5 px-2 py-0.5 rounded-full">{docs.length}</span>
             </div>
           </div>
 
           {docs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-              <div className="w-14 h-14 bg-blue-100/40 rounded-sm flex items-center justify-center mb-4">
-                <FilePlusIcon width={26} height={26} className="text-slate-300" />
+              <div className="w-14 h-14 bg-bone-5 rounded-sm flex items-center justify-center mb-4">
+                <FilePlusIcon width={26} height={26} className="text-bone-25" />
               </div>
-              <h3 className="text-slate-700 font-semibold text-base mb-2">No documents yet</h3>
-              <p className="text-slate-400 text-sm max-w-xs leading-relaxed">
+              <h3 className="text-bone-70 font-semibold text-base mb-2">No documents yet</h3>
+              <p className="text-bone-40 text-sm max-w-xs leading-relaxed">
                 Upload your first document above to add it to your workspace.
               </p>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="mt-5 inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2.5 rounded-sm transition-colors"
+                className="mt-5 inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-4 py-2.5 rounded-sm transition-colors"
               >
                 <UploadIcon width={15} height={15} />
                 Upload first document
@@ -293,12 +293,12 @@ export default function Documents() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-blue-100/40 border-b border-slate-300">
+                <thead className="bg-ink-50 border-b border-bone-15">
                   <tr>
                     {columns.map((col) => (
                       <th
                         key={col.key}
-                        className="group text-left px-5 py-3 text-slate-500 font-medium text-xs cursor-pointer hover:text-slate-700 select-none whitespace-nowrap"
+                        className="group text-left px-5 py-3 text-bone-40 font-medium text-xs cursor-pointer hover:text-bone-70 select-none whitespace-nowrap"
                         onClick={() => handleSort(col.key)}
                       >
                         <span className="flex items-center gap-1.5">
@@ -307,28 +307,28 @@ export default function Documents() {
                         </span>
                       </th>
                     ))}
-                    <th className="px-5 py-3 text-slate-500 font-medium text-xs text-right">Actions</th>
+                    <th className="px-5 py-3 text-bone-40 font-medium text-xs text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200">
+                <tbody className="divide-y divide-bone-10">
                   {sortedDocs.map((doc) => {
                     const Icon = FILE_ICONS[doc.type] || FileTextIcon;
                     const s = STATUS_CONFIG[doc.status] || STATUS_CONFIG.Processing;
                     const StatusIcon = s.icon;
                     const isSpinning = doc.status === 'Uploading';
                     return (
-                      <tr key={doc.id} className="hover:bg-blue-100/50 transition-colors">
+                      <tr key={doc.id} className="hover:bg-bone-5 transition-colors">
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-2.5">
-                            <Icon width={15} height={15} className="text-blue-400 flex-shrink-0" />
-                            <span className="text-slate-800 font-medium truncate max-w-[180px] sm:max-w-xs">{doc.name}</span>
+                            <Icon width={15} height={15} className="text-bone-40 flex-shrink-0" />
+                            <span className="text-white font-medium truncate max-w-[180px] sm:max-w-xs">{doc.name}</span>
                           </div>
                         </td>
-                        <td className="px-5 py-3.5 text-slate-500 whitespace-nowrap">{formatDate(doc.uploadedAt)}</td>
+                        <td className="px-5 py-3.5 text-bone-40 whitespace-nowrap">{formatDate(doc.uploadedAt)}</td>
                         <td className="px-5 py-3.5">
-                          <span className="text-slate-500 text-xs bg-blue-100/40 px-2 py-0.5 rounded-sm font-mono">{doc.type}</span>
+                          <span className="text-bone-40 text-xs bg-bone-5 px-2 py-0.5 rounded-sm font-mono">{doc.type}</span>
                         </td>
-                        <td className="px-5 py-3.5 text-slate-500 whitespace-nowrap">{doc.size}</td>
+                        <td className="px-5 py-3.5 text-bone-40 whitespace-nowrap">{doc.size}</td>
                         <td className="px-5 py-3.5">
                           <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${s.className}`}>
                             <StatusIcon width={11} height={11} className={isSpinning ? 'animate-spin' : ''} />
@@ -339,7 +339,7 @@ export default function Documents() {
                           <button
                             onClick={() => setDeleteTarget(doc)}
                             disabled={doc.status === 'Uploading'}
-                            className="p-1.5 text-slate-300 hover:text-red-400 hover:bg-red-50 rounded-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="p-1.5 text-bone-25 hover:text-accent hover:bg-accent/10 rounded-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                             title="Delete"
                           >
                             <TrashIcon width={14} height={14} />

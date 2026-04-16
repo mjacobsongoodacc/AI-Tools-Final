@@ -51,7 +51,7 @@ export default function AnimatedStat({ value, label, suffix = '' }) {
           {value}
           {suffix}
         </p>
-        <p className="text-slate-400 text-sm">{label}</p>
+        <p className="text-bone-40 text-sm">{label}</p>
       </motion.div>
     );
   }
@@ -62,7 +62,7 @@ export default function AnimatedStat({ value, label, suffix = '' }) {
         {numberText}
         {suffix}
       </p>
-      <p className="text-slate-400 text-sm">{label}</p>
+      <p className="text-bone-40 text-sm">{label}</p>
     </div>
   );
 }

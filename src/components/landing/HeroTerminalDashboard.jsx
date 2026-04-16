@@ -19,24 +19,18 @@ const CHAR_MS = 25;
 const BETWEEN_LINES_MS = 400;
 const LOOP_GAP_MS = 3000;
 
-function lineColorClass(line) {
-  if (line.startsWith('→ Recommendation:')) return 'text-white font-bold';
-  if (line.startsWith('$')) return 'text-slate-500';
-  if (line.startsWith('→')) return 'text-blue-400';
-  if (line.startsWith('✓')) return 'text-green-400';
-  if (line.startsWith('⚠')) return 'text-amber-400';
-  return 'text-slate-300';
+function barFillForScore(score) {
+  const s = Number(score) || 0;
+  return s >= 7 ? '#22C55E' : s >= 4 ? '#F59E0B' : '#EF4444';
 }
 
-function strokeForScore(score) {
-  const t = Math.min(1, Math.max(0, score / 10));
-  const r1 = 239 + (16 - 239) * t;
-  const g1 = 68 + (185 - 68) * t;
-  const b1 = 68 + (129 - 68) * t;
-  const r2 = 16 + (52 - 16) * t * t;
-  const g2 = 185 + (211 - 185) * t * t;
-  const b2 = 129 + (153 - 129) * t * t;
-  return `rgb(${Math.round(r1 + (r2 - r1) * t)}, ${Math.round(g1 + (g2 - g1) * t)}, ${Math.round(b1 + (b2 - b1) * t)})`;
+function lineColorClass(line) {
+  if (line.startsWith('→ Recommendation:')) return 'text-white font-bold';
+  if (line.startsWith('$')) return 'text-bone-40';
+  if (line.startsWith('→')) return 'text-accent';
+  if (line.startsWith('✓')) return 'text-white';
+  if (line.startsWith('⚠')) return 'text-accent';
+  return 'text-bone-70';
 }
 
 function MiniKpi({ label, formatValue, show, target }) {
@@ -70,13 +64,13 @@ function MiniKpi({ label, formatValue, show, target }) {
   return (
     <motion.div
       key={`${label}-on`}
-      className="flex items-center justify-between text-xs border border-slate-700/50 rounded-lg px-2.5 py-2 bg-slate-950/40"
+      className="flex items-center justify-between text-xs border border-bone-15 rounded-lg px-2.5 py-2 bg-black"
       initial={reduce ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
     >
-      <span className="text-slate-500 font-mono">{label}</span>
-      <span className="text-slate-100 font-mono-data font-mono tabular-nums">{formatValue(val)}</span>
+      <span className="text-bone-40 font-mono">{label}</span>
+      <span className="text-white font-mono-data font-mono tabular-nums">{formatValue(val)}</span>
     </motion.div>
   );
 }
@@ -121,12 +115,12 @@ function ScoreGauge({ animated, filled, reduce }) {
 
   const pct = Math.min(1, Math.max(0, score / 10));
   const offset = c * (1 - pct);
-  const stroke = strokeForScore(score);
+  const stroke = barFillForScore(score);
 
   return (
     <div className="flex items-center gap-3">
       <svg width={80} height={80} viewBox="0 0 80 80" className="shrink-0 -rotate-90" aria-hidden>
-        <circle cx={40} cy={40} r={r} fill="none" stroke="rgba(51,65,85,0.6)" strokeWidth={6} />
+        <circle cx={40} cy={40} r={r} fill="none" stroke="rgba(250,250,250,0.10)" strokeWidth={6} />
         <circle
           cx={40}
           cy={40}
@@ -140,10 +134,10 @@ function ScoreGauge({ animated, filled, reduce }) {
         />
       </svg>
       <div className="flex flex-col">
-        <span className="text-[10px] uppercase tracking-wider text-slate-500">Diligence score</span>
-        <span className="text-xl font-semibold text-slate-100 font-mono-data font-mono tabular-nums leading-none">
+        <span className="text-[10px] uppercase tracking-wider text-bone-40">Diligence score</span>
+        <span className="text-xl font-semibold text-white font-mono-data font-mono tabular-nums leading-none">
           {score.toFixed(1)}
-          <span className="text-slate-500 text-sm font-normal"> / 10</span>
+          <span className="text-bone-40 text-sm font-normal"> / 10</span>
         </span>
       </div>
     </div>
@@ -244,11 +238,11 @@ export default function HeroTerminalDashboard() {
     <div className="w-full max-w-[480px] mx-auto lg:mx-0 pointer-events-none scale-[0.95] lg:scale-100">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Terminal */}
-        <div className="rounded-xl bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 overflow-hidden flex flex-col min-h-[220px] md:min-h-[260px]">
-          <div className="flex items-center gap-2 px-3 py-2 border-b border-slate-700/40 pointer-events-auto">
-            <span className="w-2.5 h-2.5 rounded-full bg-slate-600" />
-            <span className="w-2.5 h-2.5 rounded-full bg-slate-600" />
-            <span className="w-2.5 h-2.5 rounded-full bg-slate-600" />
+        <div className="rounded-xl bg-ink-50/80 backdrop-blur-sm border border-bone-15 overflow-hidden flex flex-col min-h-[220px] md:min-h-[260px]">
+          <div className="flex items-center gap-2 px-3 py-2 border-b border-bone-15 pointer-events-auto">
+            <span className="w-2.5 h-2.5 rounded-full bg-bone-25" />
+            <span className="w-2.5 h-2.5 rounded-full bg-bone-25" />
+            <span className="w-2.5 h-2.5 rounded-full bg-bone-25" />
           </div>
           <div className="flex-1 p-3 font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden flex flex-col justify-end text-left">
             {terminalLines.map((line, i) => {
@@ -257,7 +251,7 @@ export default function HeroTerminalDashboard() {
                 <div key={`${i}-${line.slice(0, 24)}`} className={`${lineColorClass(line)} break-words`}>
                   {line}
                   {isTypingRow && !reduce ? (
-                    <span className="inline-block w-2 h-3 ml-0.5 align-[-2px] bg-slate-300 animate-pulse" />
+                    <span className="inline-block w-2 h-3 ml-0.5 align-[-2px] bg-bone-70 animate-pulse" />
                   ) : null}
                 </div>
               );
@@ -266,12 +260,12 @@ export default function HeroTerminalDashboard() {
         </div>
 
         {/* Dashboard */}
-        <div className="rounded-xl bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 p-3 flex flex-col gap-3 min-h-[220px] md:min-h-[260px]">
+        <div className="rounded-xl bg-ink-50/80 backdrop-blur-sm border border-bone-15 p-3 flex flex-col gap-3 min-h-[220px] md:min-h-[260px]">
           <div className="flex items-center gap-2">
-            <span className="text-slate-100 font-medium text-sm">Acme Corp</span>
-            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" aria-hidden />
+            <span className="text-white font-medium text-sm">Acme Corp</span>
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" aria-hidden />
           </div>
-          <div className="h-px bg-slate-700/50" />
+          <div className="h-px bg-bone-15" />
 
           <ScoreGauge
             animated={gaugeAnimated && !reduce}
@@ -296,7 +290,7 @@ export default function HeroTerminalDashboard() {
 
           {(hasRed || reduce) && (
             <motion.div
-              className="text-xs font-medium text-red-400 border border-red-500/50 rounded-lg px-2.5 py-1.5 text-center"
+              className="text-xs font-medium text-accent border border-accent rounded-lg px-2.5 py-1.5 text-center"
               initial={reduce ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.35 }}
@@ -308,7 +302,7 @@ export default function HeroTerminalDashboard() {
           <div className="flex-1 min-h-[4px]" />
 
           <motion.div
-            className="rounded-xl bg-emerald-600 text-white font-bold text-center py-2.5 text-sm shadow-lg shadow-emerald-900/20"
+            className="rounded-xl bg-accent hover:bg-accent-hover text-white font-bold text-center py-2.5 text-sm"
             initial={reduce ? false : { scale: 0.8, opacity: 0 }}
             animate={hasReco || reduce ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 420, damping: 26 }}

@@ -22,7 +22,7 @@ export default function TiltCard({ children }) {
     if (hi) {
       const hx = e.clientX - r.left;
       const hy = e.clientY - r.top;
-      hi.style.background = `radial-gradient(circle at ${hx}px ${hy}px, rgba(59, 130, 246, 0.1), transparent 40%)`;
+      hi.style.background = `radial-gradient(circle at ${hx}px ${hy}px, rgba(239, 68, 68, 0.08), transparent 40%)`;
     }
   };
 

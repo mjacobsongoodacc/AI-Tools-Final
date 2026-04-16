@@ -27,15 +27,15 @@ export default function DiligenceScoreGauge({ displayScore, diligenceScore }) {
             dataKey="value"
             cornerRadius={6}
             fill={fill}
-            background={{ fill: '#F1F5F9' }}
+            background={{ fill: 'rgba(250,250,250,0.10)' }}
           />
         </RadialBarChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-1">
-        <span className="font-mono-data text-[32px] font-bold text-slate-900 leading-none tracking-tight">
+        <span className="font-mono-data text-[32px] font-bold text-white leading-none tracking-tight">
           {(Number(displayScore) || 0).toFixed(1)}
         </span>
-        <span className="text-slate-400 text-xs font-medium mt-0.5">/10</span>
+        <span className="text-bone-40 text-xs font-medium mt-0.5">/10</span>
       </div>
     </div>
   );

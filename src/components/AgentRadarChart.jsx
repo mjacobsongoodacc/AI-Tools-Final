@@ -7,7 +7,7 @@ export default function AgentRadarChart({ confidenceScores }) {
   const entries = Object.entries(confidenceScores ?? {});
   if (entries.length === 0) {
     return (
-      <div className="flex items-center justify-center h-48 text-slate-400 text-sm text-center px-4">
+      <div className="flex items-center justify-center h-48 text-bone-40 text-sm text-center px-4">
         Agent confidence data will appear here after analysis runs.
       </div>
     );
@@ -22,11 +22,11 @@ export default function AgentRadarChart({ confidenceScores }) {
   return (
     <ResponsiveContainer width="100%" height={260}>
       <RadarChart outerRadius={85} data={data}>
-        <PolarGrid stroke="#E2E8F0" />
-        <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748B', fontSize: 11 }} />
-        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: '#94A3B8', fontSize: 9 }} />
-        <Radar name="Confidence" dataKey="A" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.12} strokeWidth={2} />
-        <Tooltip formatter={(v) => [`${v}%`, 'Confidence']} />
+        <PolarGrid stroke="rgba(250,250,250,0.10)" />
+        <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(250,250,250,0.70)', fontSize: 11 }} />
+        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: 'rgba(250,250,250,0.40)', fontSize: 9 }} />
+        <Radar name="Confidence" dataKey="A" stroke="#FAFAFA" fill="#FAFAFA" fillOpacity={0.08} strokeWidth={2} />
+        <Tooltip formatter={(v) => [`${v}%`, 'Confidence']} contentStyle={{ background: '#0A0A0A', border: '1px solid rgba(250,250,250,0.15)', borderRadius: 12, color: '#FAFAFA' }} />
       </RadarChart>
     </ResponsiveContainer>
   );

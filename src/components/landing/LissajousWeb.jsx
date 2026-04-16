@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 
-const BASE = '#0F172A';
-const NODE_COLOR = 'rgba(59, 130, 246, 0.9)';
+const BASE = '#000000';
+const NODE_COLOR = 'rgba(250, 250, 250, 0.8)';
 const TARGET_FPS_MS = 16;
 const INITIAL_NODE_COUNT = 40;
 const REDUCED_NODE_COUNT = 30;
@@ -83,7 +83,7 @@ export default function LissajousWeb({ className }) {
           let opacity = 1 - d / maxDist;
           if (opacity < 0) opacity = 0;
           if (opacity > 0.5) opacity = 0.5;
-          ctx.strokeStyle = `rgba(96, 165, 250, ${opacity})`;
+          ctx.strokeStyle = `rgba(239, 68, 68, ${opacity})`;
           ctx.beginPath();
           ctx.moveTo(na.x, na.y);
           ctx.lineTo(nb.x, nb.y);

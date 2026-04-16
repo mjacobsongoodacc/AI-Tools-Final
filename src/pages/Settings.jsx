@@ -22,38 +22,38 @@ function ConfirmDialog({ title, message, confirmLabel, confirmClass, onConfirm, 
   const isReady = requireTyped ? typed === requireTyped : true;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-      <div className="bg-blue-50 rounded-sm shadow-2xl w-full max-w-sm border border-slate-300 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-300">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+      <div className="bg-ink-50 rounded-sm w-full max-w-sm border border-bone-15 overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-bone-15">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-red-50 border border-red-100 rounded-sm flex items-center justify-center">
-              <ExclamationTriangleIcon width={14} height={14} className="text-red-500" />
+            <div className="w-7 h-7 bg-accent/10 border border-accent/35 rounded-sm flex items-center justify-center">
+              <ExclamationTriangleIcon width={14} height={14} className="text-accent" />
             </div>
-            <h2 className="text-slate-900 font-semibold text-base">{title}</h2>
+            <h2 className="text-white font-semibold text-base">{title}</h2>
           </div>
-          <button onClick={onCancel} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-sm">
+          <button onClick={onCancel} className="p-1.5 text-bone-40 hover:text-white hover:bg-bone-5 rounded-sm">
             <Cross2Icon width={16} height={16} />
           </button>
         </div>
         <div className="px-6 py-5">
-          <p className="text-slate-600 text-sm leading-relaxed mb-4">{message}</p>
+          <p className="text-bone-70 text-sm leading-relaxed mb-4">{message}</p>
           {requireTyped && (
             <div>
-              <p className="text-slate-500 text-xs mb-2">
-                Type <span className="font-mono font-semibold text-slate-700">"{requireTyped}"</span> to confirm
+              <p className="text-bone-40 text-xs mb-2">
+                Type <span className="font-mono font-semibold text-white">"{requireTyped}"</span> to confirm
               </p>
               <input
                 type="text"
                 value={typed}
                 onChange={(e) => setTyped(e.target.value)}
                 placeholder={requireTyped}
-                className="w-full border border-slate-200 focus:border-red-400 rounded-sm px-4 py-2.5 text-sm text-slate-800 outline-none transition-colors focus:ring-2 focus:ring-red-400/20"
+                className="w-full bg-black border border-bone-15 focus:border-accent rounded-sm px-4 py-2.5 text-sm text-white placeholder-bone-25 outline-none transition-colors focus:ring-2 focus:ring-accent/20"
               />
             </div>
           )}
         </div>
-        <div className="flex gap-3 px-6 py-4 bg-blue-100/40 border-t border-slate-300">
-          <button onClick={onCancel} className="flex-1 border border-slate-200 text-slate-600 font-medium py-2.5 rounded-sm text-sm hover:bg-white transition-colors">
+        <div className="flex gap-3 px-6 py-4 bg-bone-5 border-t border-bone-15">
+          <button onClick={onCancel} className="flex-1 bg-black border border-bone-25 text-bone-70 hover:bg-ink-50 font-medium py-2.5 rounded-sm text-sm transition-colors">
             Cancel
           </button>
           <button
@@ -71,13 +71,13 @@ function ConfirmDialog({ title, message, confirmLabel, confirmClass, onConfirm, 
 
 function Section({ title, icon: Icon, description, children }) {
   return (
-    <div className="bg-blue-50 border border-slate-300 rounded-sm overflow-hidden shadow-sm">
-      <div className="px-5 py-4 border-b border-slate-300">
+    <div className="bg-black border border-bone-15 rounded-sm overflow-hidden">
+      <div className="px-5 py-4 border-b border-bone-15">
         <div className="flex items-center gap-2.5">
-          <Icon width={16} height={16} className="text-slate-500" />
+          <Icon width={16} height={16} className="text-bone-40" />
           <div>
-            <h3 className="text-slate-800 font-semibold text-sm">{title}</h3>
-            {description && <p className="text-slate-400 text-xs mt-0.5">{description}</p>}
+            <h3 className="text-white font-semibold text-sm">{title}</h3>
+            {description && <p className="text-bone-40 text-xs mt-0.5">{description}</p>}
           </div>
         </div>
       </div>
@@ -88,9 +88,9 @@ function Section({ title, icon: Icon, description, children }) {
 
 function InfoField({ label, value }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-3 border-b border-slate-200 last:border-0">
-      <p className="text-slate-500 text-xs mt-0.5 w-32 flex-shrink-0">{label}</p>
-      <p className="text-slate-800 text-sm font-medium text-right">{value}</p>
+    <div className="flex items-start justify-between gap-4 py-3 border-b border-bone-10 last:border-0">
+      <p className="text-bone-40 text-xs mt-0.5 w-32 flex-shrink-0">{label}</p>
+      <p className="text-white text-sm font-medium text-right">{value}</p>
     </div>
   );
 }
@@ -141,21 +141,21 @@ export default function Settings() {
         <Section title="Data & Retention" icon={LockClosedIcon}>
           <div className="space-y-3.5">
             <div className="flex items-start gap-2.5">
-              <ClockIcon width={15} height={15} className="text-slate-400 flex-shrink-0 mt-0.5" />
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Documents are retained for <strong className="text-slate-700">{mockWorkspace.retentionDays} days</strong>.
-                Scheduled purge: <strong className="text-slate-700">{retentionDate}</strong>.
+              <ClockIcon width={15} height={15} className="text-bone-40 flex-shrink-0 mt-0.5" />
+              <p className="text-bone-70 text-sm leading-relaxed">
+                Documents are retained for <strong className="text-white">{mockWorkspace.retentionDays} days</strong>.
+                Scheduled purge: <strong className="text-white">{retentionDate}</strong>.
               </p>
             </div>
             <div className="flex items-start gap-2.5">
-              <StackIcon width={15} height={15} className="text-slate-400 flex-shrink-0 mt-0.5" />
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Files are encrypted at rest (AES-256) and in transit (TLS 1.3). Documents are <strong className="text-slate-700">never used to train AI models</strong>.
+              <StackIcon width={15} height={15} className="text-bone-40 flex-shrink-0 mt-0.5" />
+              <p className="text-bone-70 text-sm leading-relaxed">
+                Files are encrypted at rest (AES-256) and in transit (TLS 1.3). Documents are <strong className="text-white">never used to train AI models</strong>.
               </p>
             </div>
             <div className="flex items-start gap-2.5">
-              <FileTextIcon width={15} height={15} className="text-slate-400 flex-shrink-0 mt-0.5" />
-              <p className="text-slate-500 text-sm leading-relaxed">
+              <FileTextIcon width={15} height={15} className="text-bone-40 flex-shrink-0 mt-0.5" />
+              <p className="text-bone-70 text-sm leading-relaxed">
                 All document access and analysis runs are logged for 90 days and exportable on request.
               </p>
             </div>
@@ -163,23 +163,23 @@ export default function Settings() {
         </Section>
 
         {/* Danger zone */}
-        <div className="bg-blue-50 border border-red-200 rounded-sm overflow-hidden shadow-sm">
-          <div className="flex items-center gap-2.5 px-5 py-4 border-b border-red-100 bg-red-50/50">
-            <ExclamationTriangleIcon width={16} height={16} className="text-red-500" />
-            <h3 className="text-red-800 font-semibold text-sm">Danger Zone</h3>
+        <div className="bg-black border border-accent/50 rounded-sm overflow-hidden">
+          <div className="flex items-center gap-2.5 px-5 py-4 border-b border-accent/35 bg-accent/10">
+            <ExclamationTriangleIcon width={16} height={16} className="text-accent" />
+            <h3 className="text-accent font-semibold text-sm">Danger Zone</h3>
           </div>
           <div className="px-5 py-5 space-y-4">
-            <div className="flex items-start justify-between gap-4 pb-4 border-b border-slate-300">
+            <div className="flex items-start justify-between gap-4 pb-4 border-b border-bone-15">
               <div>
-                <p className="text-slate-800 text-sm font-semibold mb-0.5">Clear all documents</p>
-                <p className="text-slate-500 text-xs leading-relaxed">
+                <p className="text-white text-sm font-semibold mb-0.5">Clear all documents</p>
+                <p className="text-bone-40 text-xs leading-relaxed">
                   Remove all {docs.length} document record{docs.length !== 1 ? 's' : ''} from this workspace. Cannot be undone.
                 </p>
               </div>
               <button
                 onClick={() => setShowClearDocs(true)}
                 disabled={docs.length === 0}
-                className="flex items-center gap-1.5 border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium px-3.5 py-2 rounded-sm transition-colors flex-shrink-0"
+                className="flex items-center gap-1.5 bg-black border border-accent text-accent hover:bg-accent/10 disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium px-3.5 py-2 rounded-sm transition-colors flex-shrink-0"
               >
                 <TrashIcon width={14} height={14} />
                 Clear
@@ -187,14 +187,14 @@ export default function Settings() {
             </div>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-slate-800 text-sm font-semibold mb-0.5">Delete workspace</p>
-                <p className="text-slate-500 text-xs leading-relaxed">
+                <p className="text-white text-sm font-semibold mb-0.5">Delete workspace</p>
+                <p className="text-bone-40 text-xs leading-relaxed">
                   Permanently delete this workspace, all documents, and all configuration. Irreversible.
                 </p>
               </div>
               <button
                 onClick={() => setShowDeleteWorkspace(true)}
-                className="flex items-center gap-1.5 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-3.5 py-2 rounded-sm transition-colors flex-shrink-0"
+                className="flex items-center gap-1.5 bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-3.5 py-2 rounded-sm transition-colors flex-shrink-0"
               >
                 <TrashIcon width={14} height={14} />
                 Delete
@@ -209,7 +209,7 @@ export default function Settings() {
           title="Clear all documents"
           message={`This will permanently remove all ${docs.length} document records from this workspace. Your backend data is unaffected.`}
           confirmLabel="Clear all"
-          confirmClass="bg-red-500 hover:bg-red-600 text-white"
+          confirmClass="bg-accent hover:bg-accent-hover text-white"
           onConfirm={() => { clearAllDocuments(); setShowClearDocs(false); }}
           onCancel={() => setShowClearDocs(false)}
         />
@@ -220,7 +220,7 @@ export default function Settings() {
           title="Delete workspace"
           message="This will delete your workspace, sign you out, and clear all local data. This action is completely irreversible."
           confirmLabel="Delete workspace"
-          confirmClass="bg-red-500 hover:bg-red-600 text-white"
+          confirmClass="bg-accent hover:bg-accent-hover text-white"
           requireTyped="delete workspace"
           onConfirm={handleDeleteWorkspace}
           onCancel={() => setShowDeleteWorkspace(false)}

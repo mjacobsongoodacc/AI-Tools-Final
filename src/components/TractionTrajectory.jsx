@@ -45,7 +45,7 @@ export default function TractionTrajectory({ tractionTimeline }) {
 
   if (!hasUsers && !hasRev) {
     return (
-      <div className="flex items-center justify-center min-h-[220px] text-slate-400 text-sm text-center px-4">
+      <div className="flex items-center justify-center min-h-[220px] text-bone-40 text-sm text-center px-4">
         Traction timelines will populate when the workflow returns <span className="font-mono-data text-xs">tractionTimeline</span> with monthly users and revenue.
       </div>
     );
@@ -59,26 +59,26 @@ export default function TractionTrajectory({ tractionTimeline }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <p className="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">Growth (first → last)</p>
-        <p className="text-sm text-slate-700">
+        <p className="text-bone-40 text-[10px] font-semibold uppercase tracking-wide">Growth (first → last)</p>
+        <p className="text-sm text-bone-70">
           {cagr != null && Number.isFinite(cagr) ? (
             <>
-              <span className="text-slate-500">{cagrLabel}: </span>
-              <span className="font-mono-data font-semibold text-slate-900 tabular-nums">{(cagr * 100).toFixed(1)}%</span>
+              <span className="text-bone-40">{cagrLabel}: </span>
+              <span className="font-mono-data font-semibold text-white tabular-nums">{(cagr * 100).toFixed(1)}%</span>
             </>
           ) : (
-            <span className="text-slate-400">CAGR needs two positive points.</span>
+            <span className="text-bone-40">CAGR needs two positive points.</span>
           )}
         </p>
       </div>
       {hasUsers && (
         <div>
-          <p className="text-xs text-slate-500 mb-1">Users</p>
+          <p className="text-xs text-bone-40 mb-1">Users</p>
           <LineChart
             data={data}
             index="month"
             categories={['users']}
-            colors={['#3B82F6']}
+            colors={['#FAFAFA']}
             height={140}
             yAxisWidth={40}
             valueFormatter={(v) => (Number.isFinite(Number(v)) ? Number(v).toLocaleString() : '—')}
@@ -87,7 +87,7 @@ export default function TractionTrajectory({ tractionTimeline }) {
       )}
       {hasRev && (
         <div>
-          <p className="text-xs text-slate-500 mb-1">Revenue</p>
+          <p className="text-xs text-bone-40 mb-1">Revenue</p>
           <LineChart
             data={data}
             index="month"

@@ -10,7 +10,13 @@ import {
 } from 'recharts';
 import { CHART_COLORS } from './palette.js';
 
-const tooltipCursor = { fill: '#F8FAFC' };
+const tooltipCursor = { fill: 'rgba(250,250,250,0.05)' };
+const tooltipContentStyle = {
+  borderRadius: 12,
+  border: '1px solid rgba(250,250,250,0.15)',
+  background: '#0A0A0A',
+  color: '#FAFAFA',
+};
 
 export default function AreaChart({
   data = [],
@@ -28,29 +34,31 @@ export default function AreaChart({
 
   if (!data.length) {
     return (
-      <div className="flex items-center justify-center text-slate-400 text-sm" style={{ height }}>
+      <div className="flex items-center justify-center text-bone-40 text-sm" style={{ height }}>
         No time-series data yet.
       </div>
     );
   }
 
   const fmt = valueFormatter ?? ((v) => (typeof v === 'number' && Number.isFinite(v) ? String(v) : '—'));
+  const tickFill = 'rgba(250,250,250,0.70)';
+  const legendColor = 'rgba(250,250,250,0.70)';
 
   return (
     <ResponsiveContainer width="100%" height={height}>
       <RechartsAreaChart data={data} margin={{ left: 4, right: showLegend ? 8 : 12, top: 8, bottom: 4 }}>
         {showGridLines && (
-          <CartesianGrid stroke="#E2E8F0" strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke="rgba(250,250,250,0.10)" strokeDasharray="3 3" vertical={false} />
         )}
         <XAxis
           dataKey={index}
-          tick={{ fill: '#64748B', fontSize: 11 }}
+          tick={{ fill: tickFill, fontSize: 11 }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
           width={yAxisWidth}
-          tick={{ fill: '#64748B', fontSize: 11 }}
+          tick={{ fill: tickFill, fontSize: 11 }}
           axisLine={false}
           tickLine={false}
           tickFormatter={(v) => fmt(v)}
@@ -58,10 +66,10 @@ export default function AreaChart({
         <Tooltip
           cursor={tooltipCursor}
           formatter={(v, name) => [fmt(v), name]}
-          labelStyle={{ color: '#64748B', fontSize: 11 }}
-          contentStyle={{ borderRadius: 12, border: '1px solid #e2e8f0' }}
+          labelStyle={{ color: 'rgba(250,250,250,0.70)', fontSize: 11 }}
+          contentStyle={tooltipContentStyle}
         />
-        {showLegend && <Legend wrapperStyle={{ fontSize: 11, color: '#64748B' }} />}
+        {showLegend && <Legend wrapperStyle={{ fontSize: 11, color: legendColor }} />}
         {categories.map((key, i) => (
           <Area
             key={key}

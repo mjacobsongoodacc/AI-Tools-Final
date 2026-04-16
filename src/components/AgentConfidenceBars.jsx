@@ -5,7 +5,7 @@ export default function AgentConfidenceBars({ confidenceScores }) {
 
   if (entries.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-[200px] text-slate-400 text-sm text-center px-4">
+      <div className="flex items-center justify-center min-h-[200px] text-bone-40 text-sm text-center px-4">
         Agent-level confidence bars will populate when the workflow returns a <span className="font-mono-data text-xs">confidence_scores</span> object.
       </div>
     );
@@ -30,9 +30,9 @@ export default function AgentConfidenceBars({ confidenceScores }) {
         yAxisWidth={100}
         showGridLines
       />
-      <p className="text-xs text-slate-500 border-t border-slate-300 pt-3">
+      <p className="text-xs text-bone-40 border-t border-bone-15 pt-3">
         Average across agents:{' '}
-        <span className="font-mono-data text-slate-800 font-semibold">{avg.toFixed(0)}%</span>
+        <span className="font-mono-data text-white font-semibold">{avg.toFixed(0)}%</span>
       </p>
     </div>
   );

@@ -3,9 +3,9 @@ import { ChevronUpIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 
 function ConfidencePill({ score }) {
   const cfg =
-    score >= 70 ? { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200' } :
-    score >= 40 ? { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' } :
-                  { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' };
+    score >= 70 ? { bg: 'bg-green-500/15', text: 'text-green-400', border: 'border-green-500/35' } :
+    score >= 40 ? { bg: 'bg-amber-500/15', text: 'text-amber-400', border: 'border-amber-500/35' } :
+                  { bg: 'bg-accent/15', text: 'text-accent', border: 'border-accent/35' };
   return (
     <span className={`inline-block font-mono-data text-xs font-medium px-2 py-0.5 rounded-full border ${cfg.bg} ${cfg.text} ${cfg.border}`}>
       {score}%
@@ -19,8 +19,8 @@ export default function KPITable({ kpis }) {
 
   if (!kpis || kpis.length === 0) {
     return (
-      <div className="flex items-center justify-center h-40 text-slate-400 text-sm text-center px-4">
-        KPI data will appear here after analysis runs. Ensure your n8n workflow outputs a <code className="mx-1 px-1.5 py-0.5 bg-blue-100/40 rounded-sm text-slate-600 text-xs">kpis</code> or <code className="mx-1 px-1.5 py-0.5 bg-blue-100/40 rounded-sm text-slate-600 text-xs">metrics</code> array.
+      <div className="flex items-center justify-center h-40 text-bone-40 text-sm text-center px-4">
+        KPI data will appear here after analysis runs. Ensure your n8n workflow outputs a <code className="mx-1 px-1.5 py-0.5 bg-bone-5 rounded-sm text-bone-70 text-xs">kpis</code> or <code className="mx-1 px-1.5 py-0.5 bg-bone-5 rounded-sm text-bone-70 text-xs">metrics</code> array.
       </div>
     );
   }
@@ -37,8 +37,8 @@ export default function KPITable({ kpis }) {
   });
 
   const SortIcon = ({ k }) => sortKey !== k ? null : sortDir === 'asc'
-    ? <ChevronUpIcon width={12} height={12} className="text-blue-500 inline ml-0.5" />
-    : <ChevronDownIcon width={12} height={12} className="text-blue-500 inline ml-0.5" />;
+    ? <ChevronUpIcon width={12} height={12} className="text-accent inline ml-0.5" />
+    : <ChevronDownIcon width={12} height={12} className="text-accent inline ml-0.5" />;
 
   const cols = [
     { key: 'metric', label: 'Metric' },
@@ -50,23 +50,23 @@ export default function KPITable({ kpis }) {
     <div className="overflow-x-auto -mx-5 px-5">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-slate-300">
+          <tr className="border-b border-bone-15">
             {cols.map((c) => (
               <th
                 key={c.key}
                 onClick={() => handleSort(c.key)}
-                className="text-left py-2.5 pr-4 text-xs font-medium text-slate-500 uppercase tracking-wide cursor-pointer hover:text-slate-700 select-none whitespace-nowrap"
+                className="text-left py-2.5 pr-4 text-xs font-medium text-bone-40 uppercase tracking-wide cursor-pointer hover:text-bone-70 select-none whitespace-nowrap"
               >
                 {c.label}<SortIcon k={c.key} />
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-200">
+        <tbody className="divide-y divide-bone-10">
           {sorted.map((kpi) => (
-            <tr key={kpi.id} className="hover:bg-blue-100/50 transition-colors">
-              <td className="py-2.5 pr-4 text-slate-700 font-medium">{kpi.metric}</td>
-              <td className="py-2.5 pr-4 font-mono-data text-slate-800">{kpi.value}</td>
+            <tr key={kpi.id} className="hover:bg-bone-5 transition-colors">
+              <td className="py-2.5 pr-4 text-bone-70 font-medium">{kpi.metric}</td>
+              <td className="py-2.5 pr-4 font-mono-data text-white">{kpi.value}</td>
               <td className="py-2.5"><ConfidencePill score={kpi.confidenceScore} /></td>
             </tr>
           ))}

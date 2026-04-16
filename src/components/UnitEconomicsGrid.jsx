@@ -1,28 +1,28 @@
 function dotClass(kind, value, unitEconomics) {
   const u = unitEconomics ?? {};
-  if (kind === 'neutral') return 'bg-slate-300';
+  if (kind === 'neutral') return 'bg-bone-25';
   if (kind === 'ltvCac') {
     const r = Number(value);
-    if (!Number.isFinite(r)) return 'bg-slate-300';
+    if (!Number.isFinite(r)) return 'bg-bone-25';
     if (r >= 3) return 'bg-green-500';
     if (r >= 1) return 'bg-amber-500';
     return 'bg-red-500';
   }
   if (kind === 'margin') {
     const g = Number(value);
-    if (!Number.isFinite(g)) return 'bg-slate-300';
+    if (!Number.isFinite(g)) return 'bg-bone-25';
     if (g >= 70) return 'bg-green-500';
     if (g >= 40) return 'bg-amber-500';
     return 'bg-red-500';
   }
   if (kind === 'payback') {
     const p = Number(u.paybackMonths ?? value);
-    if (!Number.isFinite(p)) return 'bg-slate-300';
+    if (!Number.isFinite(p)) return 'bg-bone-25';
     if (p <= 12) return 'bg-green-500';
     if (p <= 24) return 'bg-amber-500';
     return 'bg-red-500';
   }
-  return 'bg-slate-300';
+  return 'bg-bone-25';
 }
 
 function fmtNum(n, suffix = '') {
@@ -33,12 +33,12 @@ function fmtNum(n, suffix = '') {
 
 function Card({ label, value, dotKind, dotValue, unitEconomics }) {
   return (
-    <div className="bg-blue-50 border border-slate-300 rounded-sm p-4 flex flex-col gap-2 shadow-sm">
+    <div className="bg-black border border-bone-15 rounded-sm p-4 flex flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">{label}</span>
+        <span className="text-bone-40 text-[10px] font-semibold uppercase tracking-wide">{label}</span>
         <span className={`w-2 h-2 rounded-full flex-shrink-0 ${dotClass(dotKind, dotValue, unitEconomics)}`} aria-hidden />
       </div>
-      <p className="font-mono-data text-2xl font-bold text-slate-900 leading-tight">{value}</p>
+      <p className="font-mono-data text-2xl font-bold text-white leading-tight">{value}</p>
     </div>
   );
 }
@@ -46,7 +46,7 @@ function Card({ label, value, dotKind, dotValue, unitEconomics }) {
 export default function UnitEconomicsGrid({ unitEconomics }) {
   if (unitEconomics == null || typeof unitEconomics !== 'object') {
     return (
-      <div className="bg-blue-50 border border-slate-300 rounded-sm p-8 flex items-center justify-center text-slate-400 text-sm text-center shadow-sm">
+      <div className="bg-black border border-bone-15 rounded-sm p-8 flex items-center justify-center text-bone-40 text-sm text-center">
         Unit economics will appear once the KPI agent extracts them.
       </div>
     );
@@ -63,7 +63,7 @@ export default function UnitEconomicsGrid({ unitEconomics }) {
 
   if (!hasAny) {
     return (
-      <div className="bg-blue-50 border border-slate-300 rounded-sm p-8 flex items-center justify-center text-slate-400 text-sm text-center shadow-sm">
+      <div className="bg-black border border-bone-15 rounded-sm p-8 flex items-center justify-center text-bone-40 text-sm text-center">
         Unit economics will appear once the KPI agent extracts them.
       </div>
     );
@@ -94,11 +94,11 @@ export default function UnitEconomicsGrid({ unitEconomics }) {
         />
       </div>
       {payback != null && payback !== '' && (
-        <div className="flex items-center justify-between gap-3 rounded-sm border border-slate-300 bg-blue-100/40 px-4 py-2.5">
-          <span className="text-slate-500 text-xs font-medium uppercase tracking-wide">Payback</span>
+        <div className="flex items-center justify-between gap-3 rounded-sm border border-bone-15 bg-bone-5 px-4 py-2.5">
+          <span className="text-bone-40 text-xs font-medium uppercase tracking-wide">Payback</span>
           <div className="flex items-center gap-2">
             <span className={`w-2 h-2 rounded-full ${dotClass('payback', payback, unitEconomics)}`} aria-hidden />
-            <span className="font-mono-data text-sm font-semibold text-slate-800">{fmtNum(payback, ' mo')}</span>
+            <span className="font-mono-data text-sm font-semibold text-white">{fmtNum(payback, ' mo')}</span>
           </div>
         </div>
       )}
